@@ -6,6 +6,8 @@ This repo is a house for some of my mini scripts and configurations that doesn't
 ## Tour  
 All directories are supposed to have a readme. If one doesn't have, pls [tell me](https://github.com/arfs6/arfs6/issues).  
 - [Configs](./configs): My configs directory.  
+## Projects  
+- [Comodoro](https://github.com/arfs6/comodoro): A cross platform GUI and CLI pomodoro app. I have stopped maintaining it.  
 ## Links  
 Website: https://arfs6.me or https://arfs6.github.io
 mail: arfs6.mail@gmail.com
