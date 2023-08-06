@@ -5,6 +5,8 @@ vim.keymap.set('n', ';', ':')
 vim.keymap.set('t', 'jj', '<C-\\><C-n>')
 vim.keymap.set('n', '<leader>tb', ':tabe | terminal bash<cr>')
 vim.keymap.set('n', '<leader>t', ':tabe<cr>')
+vim.keymap.set('n', '<leader>s', ':w<cr>')
+
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)

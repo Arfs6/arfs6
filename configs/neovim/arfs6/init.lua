@@ -1,3 +1,4 @@
+local vim = vim
 A = {}
 
 -- lsp and mason servers
@@ -16,3 +17,4 @@ require "arfs6.lazy_config"
 A.p = function(obj)
 	print(vim.inspect(obj))
 end
+A.os = vim.loop.os_uname().sysname
