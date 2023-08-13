@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 #Update the neovim configs.
-cp -r ~/.config/nvim/lua/arfs6 ./
-git add arfs6
+cp -r ~/.config/nvim ./
+git add nvim
 echo -n "Enter the commit message for this neovim config update: "
 read commitMessage
 if [ ! -n "$commitMessage" ]; then
