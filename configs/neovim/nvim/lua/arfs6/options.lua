@@ -1,14 +1,17 @@
 vim.opt.title = true
 vim.opt.ruler = false
-
--- indent line plugin config
-vim.g.indentLine_char = '|'
 vim.opt.number = true
 vim.opt.smartindent = true
 vim.opt.softtabstop = 8
 vim.opt.shiftwidth = 8
 vim.opt.colorcolumn = "80"
-vim.opt.clipboard = "unnamedplus" -- Sync system clipboard with vim's clipboard
+vim.api.nvim_create_autocmd('vimenter', {
+	callback = function()
+		vim.schedule(function()
+			vim.opt.clipboard = "unnamedplus" -- Sync system clipboard with vim's clipboard
+	end)
+	end
+})
 vim.opt.cursorline = true
 vim.opt.cursorcolumn = true
 vim.opt.expandtab = false
@@ -24,3 +27,7 @@ vim.opt.foldmethod = "indent"
 vim.opt.foldenable = false
 vim.opt.foldexpr = "nvim_treesitter"
 vim.cmd[[filetype plugin indent on]]
+vim.opt.showtabline = 1
+
+-- indent line plugin config
+vim.g.indentLine_char = '|'

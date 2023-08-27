@@ -46,3 +46,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		end, opts)
 	end,
 })
+vim.keymap.set('n', '<leader>rp', function()
+	package.loaded.keytones = nil
+	require('keytones').setup()
+end)
