@@ -16,6 +16,7 @@ vim.opt.cursorline = true
 vim.opt.cursorcolumn = true
 vim.opt.expandtab = false
 vim.opt.syntax = 'on'
+vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.scrolloff = 4
 vim.opt.ruler = false-- indentation for js is 2 spaces
