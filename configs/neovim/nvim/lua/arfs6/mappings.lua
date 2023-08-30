@@ -1,4 +1,5 @@
 local vim = vim
+local set = vim.keymap.set
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.keymap.set({'i', 'v'}, 'jj', '<ESC>')
@@ -50,3 +51,4 @@ vim.keymap.set('n', '<leader>rp', function()
 	package.loaded.keytones = nil
 	require('keytones').setup()
 end)
+set('i', '<a-a>', '<c-x><c-o')

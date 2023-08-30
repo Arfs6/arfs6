@@ -75,19 +75,28 @@ return {
 		{
 			"L3MON4D3/LuaSnip",
 			version = "2.*",
-			config = require'arfs6.configs.luasnip',
+			config = require'arfs6.configs.luasnip'.config,
 			build = "make install_jsregexp",
 			event = "InsertEnter",
 			dependencies = {
 			"rafamadriz/friendly-snippets",
-			config = true,
+			config = function()end,
 		},
 		},
 
 		{
 			"hrsh7th/nvim-cmp",
-			config = true,
+			config = require'arfs6.configs.cmp'.config,
 			event = "InsertEnter",
+			dependencies = {
+				{
+					'hrsh7th/cmp-buffer',
+				},
+				{
+					'saadparwaiz1/cmp_luasnip',
+					config = true,
+				},
+			},
 		},
 
 		{
