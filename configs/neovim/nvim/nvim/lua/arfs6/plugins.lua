@@ -15,7 +15,7 @@ return {
 	{
 		'windwp/nvim-autopairs',
 		event = "InsertEnter",
-		config = require'arfs6.configs.autopairs'.config,
+		config = true,
 	},
 
 	{
@@ -75,28 +75,14 @@ return {
 		{
 			"L3MON4D3/LuaSnip",
 			version = "2.*",
-			config = require'arfs6.configs.luasnip'.config,
 			build = "make install_jsregexp",
-			event = "InsertEnter",
-			dependencies = {
-			"rafamadriz/friendly-snippets",
-			config = function()end,
-		},
+			lazy = false,
 		},
 
 		{
 			"hrsh7th/nvim-cmp",
-			config = require'arfs6.configs.cmp'.config,
+			config = true,
 			event = "InsertEnter",
-			dependencies = {
-				{
-					'hrsh7th/cmp-buffer',
-				},
-				{
-					'saadparwaiz1/cmp_luasnip',
-					config = true,
-				},
-			},
 		},
 
 		{
@@ -115,12 +101,5 @@ return {
 			"https://github.com/machakann/vim-sandwich",
 			keys = require("arfs6.configs/sandwich").keys,
 			config = require("arfs6.configs/sandwich").config
-		},
-
-		{
-			"arfs6/keytones.nvim",
-			dir = "~/proj/nvim/keytones.nvim",
-			lazy = false,
-			config = true,
-		},
-	c}
+		}
+	}

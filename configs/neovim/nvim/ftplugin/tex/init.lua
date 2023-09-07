@@ -1,25 +1,14 @@
-require("lspconfig").texlab.setup{
-	settings = {
-		texlab = {
-			build = {
-				onSave = false,
-				build = nil,
-			}
-		}
-	}
-}
 vim.g.vimtex_compiler_latexmk = {
 	aux_dir = "/tmp/tex/aux",
 	out_dir = "/tmp/tex/out",
 }
-vim.g.vimtex_complete_enabled = 0
-vim.g.vimtex_imaps_enabled = 0
+-- vim.g.vimtex_complete_enabled = 0
+-- vim.g.vimtex_imaps_enabled = 0
 vim.g.vimtex_quickfix_autoclose_after_keystrokes = 6
 vim.g.vimtex_view_enabled = 0
 vim.api.nvim_create_autocmd({"VimLeavePre"}, {
 	-- pattern = "*.tex",
 	callback = function()
-		vim.print("Cleaning...")
 		-- vim.cmd[[silent :VimtexStop]]
 		vim.fn.system{
 			"rm",

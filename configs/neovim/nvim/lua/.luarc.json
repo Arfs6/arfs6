@@ -18,6 +18,8 @@
         "/home/abuahmad/.local/share/nvim/lazy/nvterm/lua",
         "/home/abuahmad/.local/share/nvim/lazy/nvim-autopairs/lua",
         "/home/abuahmad/.config/nvim/lua",
+        "${3rd}/luv/library",
+        "${3rd}/luv/library",
         "${3rd}/luv/library"
     ]
 }

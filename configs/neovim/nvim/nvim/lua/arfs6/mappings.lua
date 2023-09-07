@@ -1,5 +1,4 @@
 local vim = vim
-local set = vim.keymap.set
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.keymap.set({'i', 'v'}, 'jj', '<ESC>')
@@ -47,8 +46,4 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		end, opts)
 	end,
 })
-vim.keymap.set('n', '<leader>rp', function()
-	package.loaded.keytones = nil
-	require('keytones').setup()
-end)
-set('i', '<a-a>', '<c-x><c-o')
+vim.keymap.set('n', '<leader>ch', '<cmd> w | silent ! | chmod +x %<cr>', { silent = true })

@@ -11,4 +11,3 @@ require("lspconfig").lua_ls.setup{
 		},
 	},
 }
-vim.print("Setup lua_ls server")
