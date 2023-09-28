@@ -34,3 +34,9 @@ opt.showtabline = 1
 -- indent line plugin config
 vim.g.indentLine_char = '|'
 opt.undofile = true
+
+-- folds
+opt.foldmethod = "expr"
+-- opt.foldexpr = "nvim_treesitter#foldexpr()"
+opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+opt.foldlevelstart = 1

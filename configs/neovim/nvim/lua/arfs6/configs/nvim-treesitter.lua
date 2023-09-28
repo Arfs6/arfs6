@@ -15,6 +15,7 @@ return {
 				"python",
 				"json",
 				"markdown",
+				"yaml",
 			},
 			sync_install = false,
 			highlight = { enable = false },

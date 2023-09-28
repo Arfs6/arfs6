@@ -62,7 +62,7 @@ return {
 				require("nvim-treesitter.install").update({ with_sync = true })
 			end,
 			config = require("arfs6.configs.nvim-treesitter").config,
-		event = 'InsertEnter',
+			lazy = false,
 		},
 
 		{
@@ -136,6 +136,7 @@ return {
 			"arfs6/keytones.nvim",
 			dir = "~/proj/nvim/keytones.nvim",
 			lazy = false,
+		enabled = false,
 			config = true,
 		},
 	}
