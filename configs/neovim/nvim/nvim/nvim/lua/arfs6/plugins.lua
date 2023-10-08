@@ -1,19 +1,4 @@
 return {
-		{
-			"nvim-lua/plenary.nvim",
-			},
-
-	{
-		'nvim-telescope/telescope.nvim',
-		branch = '0.1.x',
-		config = require'arfs6.configs.telescope'.config,
-		cmd = 'Telescope',
-		dependencies ={
-			'nvim-telescope/telescope-fzf-native.nvim',
-			build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
-		},
-	},
-
 	{
 		"folke/neoconf.nvim",
 		config = true,
@@ -62,7 +47,6 @@ return {
 				require("nvim-treesitter.install").update({ with_sync = true })
 			end,
 			config = require("arfs6.configs.nvim-treesitter").config,
-			lazy = false,
 		},
 
 		{
@@ -110,6 +94,7 @@ return {
 				},
 				{
 					'saadparwaiz1/cmp_luasnip',
+					config = true,
 				},
 			},
 		},
@@ -136,12 +121,6 @@ return {
 			"arfs6/keytones.nvim",
 			dir = "~/proj/nvim/keytones.nvim",
 			lazy = false,
-		enabled = false,
 			config = true,
 		},
-	{
-		"hrsh7th/nvim-pasta",
-		lazy = False,
-		config = require'arfs6.configs.nvim-pasta'.config
-	},
-	}
+	c}
