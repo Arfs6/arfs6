@@ -41,7 +41,7 @@ return {
 
 	{
 		"lukas-reineke/indent-blankline.nvim",
-		config = true,
+		config = require"arfs6.configs.indent-blankline".config,
 		lazy = false,
 	},
 
@@ -63,6 +63,7 @@ return {
 			end,
 			config = require("arfs6.configs.nvim-treesitter").config,
 			lazy = false,
+enabled = false,
 		},
 
 		{
@@ -122,7 +123,7 @@ return {
 
 		{
 			'mfussenegger/nvim-lint',
-			event = 'BufEnter',
+ft = 'tex',
 			config = require("arfs6.configs.nvim-lint").config
 		},
 
