@@ -16,8 +16,6 @@ vim.api.nvim_create_autocmd({"VimLeavePre"}, {
 			"/tmp/tex/aux",
 			"/tmp/tex/out"
 		}
-		vim.print("Done cleaning!")
-		vim.cmd[[!echo hello > hello]]
 	end,
 })
 
@@ -66,8 +64,8 @@ vim.api.nvim_create_autocmd({"VimLeavePre"}, {
 				fileName,
 			}
 		end
-vim.api.nvim_create_autocmd({"BufWrite"}, {
+--[[ vim.api.nvim_create_autocmd({"BufWrite"}, {
 	pattern = "*.tex",
 	callback = compile
-})
+}) ]]
 vim.keymap.set('n', '<F5>', compile)

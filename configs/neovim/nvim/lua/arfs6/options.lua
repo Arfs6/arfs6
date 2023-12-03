@@ -6,13 +6,19 @@ opt.smartindent = true
 opt.softtabstop = 8
 opt.shiftwidth = 8
 opt.colorcolumn = "80"
-vim.api.nvim_create_autocmd('vimenter', {
-	callback = function()
-		vim.schedule(function()
-			opt.clipboard = "unnamedplus" -- Sync system clipboard with vim's clipboard
-	end)
-	end
-})
+vim.cmd[[set clipboard+=unnamedplus]]
+vim.g.clipboard = {
+    name = 'win32yank-wsl',
+    copy = {
+        ['+'] = {'win32yank.exe', '-i', '--crlf'},
+        ['*'] = {'win32yank.exe', '-i', '--crlf'},
+    },
+    paste = {
+        ['+'] = {'win32yank.exe', '-o', '--lf'},
+        ['*'] = {'win32yank.exe', '-o', '--lf'},
+    },
+    cache_enabled = 0,
+}
 opt.cursorline = true
 opt.cursorcolumn = true
 opt.expandtab = false

@@ -37,12 +37,14 @@ local options = {
 
 m.config = function()
 	local lsp = require'lspconfig'
+	-- local capabilities = require('cmp_nvim_lsp').default_capabilities()
 	for idx, server in ipairs(A.servers) do
 		idx = idx  -- mute lsp
 		local opts = options[server]
 		if opts == nil then
 			opts = {}
 		end
+		-- opts.capabilities = capabilities
 		vim.schedule(function()
 		lsp[server].setup(opts)
 		end)

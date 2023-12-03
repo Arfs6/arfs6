@@ -1,5 +1,5 @@
 return {
-	config = function () 
+	config = function ()
 		local configs = require("nvim-treesitter.configs")
 
 		configs.setup({
@@ -18,7 +18,10 @@ return {
 				"yaml",
 			},
 			sync_install = false,
-			highlight = { enable = false },
+			highlight = {
+enable = true,
+additional_vim_regex_highlighting = false,
+},
 			indent = { enable = true },
 		})
 	end,

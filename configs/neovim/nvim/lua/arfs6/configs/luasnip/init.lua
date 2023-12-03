@@ -3,7 +3,7 @@ return {
 		local ls = require"luasnip"
 		ls.setup{}
 		require("luasnip.loaders.from_vscode").lazy_load()
-		vim.keymap.set({"i"}, "<C-rKk>", function() ls.expand() end, {silent = true})
+		vim.keymap.set({"i"}, "<Tab>", function() ls.expand() end, {silent = true})
 		vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
 		vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
 
