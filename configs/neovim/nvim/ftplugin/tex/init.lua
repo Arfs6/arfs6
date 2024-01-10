@@ -9,7 +9,6 @@ vim.g.vimtex_view_enabled = 0
 vim.api.nvim_create_autocmd({"VimLeavePre"}, {
 	-- pattern = "*.tex",
 	callback = function()
-		-- vim.cmd[[silent :VimtexStop]]
 		vim.fn.system{
 			"rm",
 			"-rf",
@@ -69,3 +68,4 @@ vim.api.nvim_create_autocmd({"VimLeavePre"}, {
 	callback = compile
 }) ]]
 vim.keymap.set('n', '<F5>', compile)
+vim.g.vimtex_indent_enabled = 0

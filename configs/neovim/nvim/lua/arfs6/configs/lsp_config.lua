@@ -2,15 +2,15 @@ local m = {}
 
 local options = {
 	texlab = {
-	settings = {
-		texlab = {
-			build = {
-				onSave = false,
-				build = nil,
+		settings = {
+			texlab = {
+				build = {
+					onSave = false,
+					build = nil,
+				}
 			}
 		}
-	}
-},
+	},
 
 	lua_ls = {
 		settings = {
@@ -24,7 +24,7 @@ local options = {
 				},
 				diagnostics = {
 					-- Get the language server to recognize the `vim` global
-					globals = {'vim'},
+					globals = { 'vim' },
 				},
 				completion = {
 					callSnippet = "Replace"
@@ -36,19 +36,29 @@ local options = {
 }
 
 m.config = function()
-	local lsp = require'lspconfig'
-	-- local capabilities = require('cmp_nvim_lsp').default_capabilities()
+	local lsp = require 'lspconfig'
+	local capabilities = require('cmp_nvim_lsp').default_capabilities()
 	for idx, server in ipairs(A.servers) do
-		idx = idx  -- mute lsp
+		idx = idx -- mute lsp
 		local opts = options[server]
 		if opts == nil then
 			opts = {}
 		end
-		-- opts.capabilities = capabilities
+		opts.capabilities = capabilities
 		vim.schedule(function()
-		lsp[server].setup(opts)
+			lsp[server].setup(opts)
 		end)
 	end
+	vim.api.nvim_create_autocmd({ 'VimEnter', }, {
+		callback = function()
+			vim.schedule(function()
+				vim.wait(2000, function()
+					vim.cmd('LspStart')
+					return vim.lsp.buf.server_ready()
+				end)
+			end)
+		end
+	})
 end
 
 return m

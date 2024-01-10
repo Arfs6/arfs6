@@ -11,14 +11,13 @@ A.servers = {
 	'yamlls',
 	'pyright',
 	"bashls",
-	"texlab",
+	-- "texlab", -- I don't need this at the moment
 }
 
 require "arfs6.options"
 require "arfs6.mappings"
-require"arfs6.autocmd"
-A.plugins = require "arfs6.plugins"
-require "arfs6.lazy_config"
+local plugins = require "arfs6.plugins"
+require "arfs6.lazy_config".load_plugins(plugins)
 A._scratch = require "arfs6.scratch"
 
 A.p = function(obj)

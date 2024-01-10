@@ -3,7 +3,7 @@ local set = vim.keymap.set
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.keymap.set({'i', 'v'}, 'jj', '<ESC>')
-vim.keymap.set('n', ';', ':')
+-- vim.keymap.set('n', ';', ':')
 vim.keymap.set('t', 'jj', '<C-\\><C-n>')
 vim.keymap.set('n', '<leader>tb', ':tabe | terminal bash<cr>')
 vim.keymap.set('n', '<leader>t', ':tabe<cr>')

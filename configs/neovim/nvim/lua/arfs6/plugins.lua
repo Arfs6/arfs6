@@ -17,20 +17,6 @@ return {
 	},
 
 	{
-		"folke/neoconf.nvim",
-		config = true,
-		lazy = false,
-		enabled = false,
-	},
-
-	{
-		"folke/neodev.nvim",
-		config = true,
-		lazy = false,
-		enabled = false,
-	},
-
-	{
 		'windwp/nvim-autopairs',
 		event = "InsertEnter",
 		config = require 'arfs6.configs.autopairs'.config,
@@ -47,7 +33,7 @@ return {
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		config = require "arfs6.configs.indent-blankline".config,
-		lazy = false,
+		event = "VeryLazy",
 		enabled = true,
 	},
 
@@ -61,16 +47,22 @@ return {
 				lastplace_open_folds = true
 			})
 		end,
+		enabled = true,
 	},
 
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = function()
-			require("nvim-treesitter.install").update({ with_sync = true })
-		end,
+			require("nvim-treesitter.install").update({ with_sync = true }) end,
 		config = require("arfs6.configs.nvim-treesitter").config,
-		event = { "cursormoved", "insertenter" },
+		event = {"VeryLazy"},
 		enabled = true,
+		dependencies = {
+	{
+		"nvim-treesitter/nvim-treesitter-textobjects",
+		config = require'arfs6.configs.nvim-treesitter-textobjects'.config,
+		},
+		}
 	},
 
 	{
@@ -85,19 +77,6 @@ return {
 		config = require("arfs6.configs.mason_lsp_config").config,
 		lazy = false,
 		enabled = true,
-	},
-
-	{
-		"neovim/nvim-lspconfig",
-		config = require "arfs6.configs.lsp_config".config,
-		lazy = false,
-		enabled = true,
-	},
-
-	{
-		"lervag/vimtex",
-		enabled = true,
-		ft = "tex",
 	},
 
 	{
@@ -127,9 +106,20 @@ return {
 			},
 			{
 				'hrsh7th/cmp-nvim-lsp',
-				enable = false,
+				-- enable = false,
+			},
+			{
+				"zbirenbaum/copilot-cmp",
+				config = true,
 			},
 		},
+	},
+
+	{
+		"neovim/nvim-lspconfig",
+		config = require "arfs6.configs.lsp_config".config,
+		event = "VeryLazy",
+		enabled = true,
 	},
 
 	{
@@ -144,6 +134,12 @@ return {
 		enabled = true,
 		ft = 'tex',
 		config = require("arfs6.configs.nvim-lint").config
+	},
+
+	{
+		"lervag/vimtex",
+		enabled = true,
+		ft = "tex",
 	},
 
 	{
@@ -162,7 +158,21 @@ return {
 	},
 	{
 		"hrsh7th/nvim-pasta",
-		lazy = False,
+		lazy = false,
+		enabled = false,
 		config = require 'arfs6.configs.nvim-pasta'.config
 	},
+
+	{
+		"folke/tokyonight.nvim",
+		lazy = false,
+		config = require("arfs6.configs.tokyonight").config,
+	},
+
+	{
+		"zbirenbaum/copilot.lua",
+		event = 'insertenter',
+		cmd = 'Copilot',
+		config = require('arfs6.configs.copilot').config,
+	}
 }

@@ -16,6 +16,7 @@ return {
 				"json",
 				"markdown",
 				"yaml",
+				"latex",
 			},
 			sync_install = false,
 			highlight = {
