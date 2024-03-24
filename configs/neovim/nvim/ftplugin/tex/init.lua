@@ -54,7 +54,7 @@ vim.api.nvim_create_autocmd({"VimLeavePre"}, {
 		"make4ht",
 		fileName,
 		"-l",
-		"html,index=2,frame,3,next",
+		"html,index=2,frame,3,next,mathjax",
 			}
 		end
 vim.keymap.set('n', '<leader>ac', function()

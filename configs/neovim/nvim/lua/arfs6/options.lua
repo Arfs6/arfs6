@@ -43,3 +43,5 @@ opt.foldmethod = "expr"
 opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 opt.foldlevelstart = 3
 opt.termguicolors = true
+opt.completeopt="menu,menuone,preview"
+opt.pumwidth=9999
