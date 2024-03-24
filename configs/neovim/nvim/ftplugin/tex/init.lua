@@ -50,22 +50,19 @@ vim.api.nvim_create_autocmd({"VimLeavePre"}, {
 			end
 			local newFile = changeExtToHtml(fileName)
 
-			vim.fn.system{
-				"pandoc",
-				"-s",
-				"--mathml",
-				"-f",
-				"latex",
-				"-t",
-				"html",
-				"-o",
-				newFile,
-				fileName,
+			vim.fn.jobstart{
+		"make4ht",
+		fileName,
+		"-l",
+		"html,index=2,frame,3,next",
 			}
 		end
---[[ vim.api.nvim_create_autocmd({"BufWrite"}, {
+vim.keymap.set('n', '<leader>ac', function()
+	vim.api.nvim_create_autocmd({"BufWritePost"}, {
 	pattern = "*.tex",
 	callback = compile
-}) ]]
+})
+	vim.print("Auto compilation started.")
+end)
 vim.keymap.set('n', '<F5>', compile)
 vim.g.vimtex_indent_enabled = 0
