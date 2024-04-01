@@ -1,6 +1,6 @@
 vim.g.vimtex_compiler_latexmk = {
-	aux_dir = "/tmp/tex/aux",
-	out_dir = "/tmp/tex/out",
+	aux_dir = "/tmp/tex/aux/",
+	out_dir = "/tmp/tex/out/",
 }
 -- vim.g.vimtex_complete_enabled = 0
 -- vim.g.vimtex_imaps_enabled = 0
@@ -9,7 +9,7 @@ vim.g.vimtex_view_enabled = 0
 vim.api.nvim_create_autocmd({"VimLeavePre"}, {
 	-- pattern = "*.tex",
 	callback = function()
-		vim.fn.system{
+		vim.fn.jobstart{
 			"rm",
 			"-rf",
 			"/tmp/tex/aux",

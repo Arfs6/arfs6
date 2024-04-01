@@ -56,8 +56,3 @@ vim.keymap.set('n', '<leader>rp', function()
 	require('keytones').setup()
 end)
 set('i', '<a-a>', '<c-x><c-o>')
-
--- Telescope
-set({'n', }, '<leader>ff', '<cmd> Telescope find_files <cr>')
-set({'n', }, '<leader>fh', '<cmd> Telescope help_tags <cr>')
-set({'n', }, '<leader>fz', '<cmd> Telescope current_buffer_fuzzy_find <cr>')

@@ -5,7 +5,6 @@ return {
 		local npairs = require'nvim-autopairs'
 		local cond = require"nvim-autopairs.conds"
 		npairs.add_rule(rule('$$', '$$', 'tex'))
-		local npairs = require'nvim-autopairs'
 		local Rule   = require'nvim-autopairs.rule'
 
 		-- Add spaces after brackets

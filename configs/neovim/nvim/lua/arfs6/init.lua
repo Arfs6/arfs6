@@ -6,7 +6,7 @@ A.servers = {
 	'lua_ls',
 	'clangd',
 	'cssls',
-	-- 'html',
+	'html',
 	'ruff_lsp',
 	'yamlls',
 	'pyright',

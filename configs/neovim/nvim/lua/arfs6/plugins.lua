@@ -7,6 +7,7 @@ return {
 		'nvim-telescope/telescope.nvim',
 		branch = '0.1.x',
 		config = require 'arfs6.configs.telescope'.config,
+		keys = require 'arfs6.configs.telescope'.keys,
 		cmd = 'Telescope',
 		enabled = true,
 		dependencies = {
@@ -53,15 +54,16 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = function()
-			require("nvim-treesitter.install").update({ with_sync = true }) end,
+			require("nvim-treesitter.install").update({ with_sync = true })
+		end,
 		config = require("arfs6.configs.nvim-treesitter").config,
-		event = {"VeryLazy"},
+		event = { "VeryLazy" },
 		enabled = true,
 		dependencies = {
-	{
-		"nvim-treesitter/nvim-treesitter-textobjects",
-		config = require'arfs6.configs.nvim-treesitter-textobjects'.config,
-		},
+			{
+				"nvim-treesitter/nvim-treesitter-textobjects",
+				config = require 'arfs6.configs.nvim-treesitter-textobjects'.config,
+			},
 		}
 	},
 
@@ -174,5 +176,18 @@ return {
 		event = 'insertenter',
 		cmd = 'Copilot',
 		config = require('arfs6.configs.copilot').config,
+	},
+
+	{
+		"theprimeagen/harpoon",
+		config = require("arfs6.configs.harpoon"),
+		keys = require("arfs6.configs.harpoon").keys,
+		enabled = false,
+	},
+
+	{
+		"stevearc/oil.nvim",
+		config = true,
+		lazy = false,
 	}
 }

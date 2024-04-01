@@ -43,6 +43,7 @@ opt.foldmethod = "expr"
 opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 opt.foldlevelstart = 3
 opt.termguicolors = true
+opt.spell = true
+opt.isfname:append("@-@")
 opt.completeopt="menu,menuone,preview"
 opt.pumwidth=9999
-opt.spell = true

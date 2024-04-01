@@ -31,13 +31,22 @@ local options = {
 				},
 			},
 		},
-	}
+	},
+
+	html = {
+		filetypes = {
+			"html",
+"templ" ,
+"htmldjango",
+		},
+	},
 
 }
 
 m.config = function()
 	local lsp = require 'lspconfig'
 	local capabilities = require('cmp_nvim_lsp').default_capabilities()
+	capabilities.textDocument.completion.completionItem.snippetSupport = true
 	for idx, server in ipairs(A.servers) do
 		idx = idx -- mute lsp
 		local opts = options[server]
