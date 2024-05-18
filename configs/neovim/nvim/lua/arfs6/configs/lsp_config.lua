@@ -54,11 +54,9 @@ m.config = function()
 			opts = {}
 		end
 		opts.capabilities = capabilities
-		vim.schedule(function()
-			lsp[server].setup(opts)
-		end)
+		lsp[server].setup(opts)
 	end
-	vim.api.nvim_create_autocmd({ 'VimEnter', }, {
+	--[[ vim.api.nvim_create_autocmd({ 'VimEnter', }, {
 		callback = function()
 			vim.schedule(function()
 				vim.wait(2000, function()
@@ -67,7 +65,7 @@ m.config = function()
 				end)
 			end)
 		end
-	})
+	}) ]]
 end
 
 return m

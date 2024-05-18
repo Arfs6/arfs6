@@ -84,13 +84,13 @@ return {
 	{
 		"L3MON4D3/LuaSnip",
 		version = "2.*",
-		config = require 'arfs6.configs.luasnip'.config,
+		config = require 'arfs6.configs.lua_snip'.config,
 		build = "make install_jsregexp",
 		event = "InsertEnter",
 		enabled = true,
 		dependencies = {
 			"rafamadriz/friendly-snippets",
-			config = function() end,
+			config = false,
 		},
 	},
 
@@ -148,6 +148,7 @@ return {
 		"https://github.com/machakann/vim-sandwich",
 		keys = require("arfs6.configs.sandwich").keys,
 		config = require("arfs6.configs.sandwich").config,
+		event = 'VeryLazy',
 		enabled = true,
 	},
 
@@ -187,7 +188,12 @@ return {
 
 	{
 		"stevearc/oil.nvim",
-		config = true,
+		config = require("arfs6.configs.oil").config,
 		lazy = false,
+	},
+
+	{
+		"tpope/vim-fugitive",
+		cmd ={"Git", "G"},
 	}
 }

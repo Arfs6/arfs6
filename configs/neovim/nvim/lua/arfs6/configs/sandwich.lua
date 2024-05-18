@@ -1,6 +1,8 @@
 return {
 	keys = {
-		'sa', 'sr', 'sd'
+		{'sa', nil, {'n', 'v', 'x'}},
+		{'sr', nil, {'n', 'v', 'x'}},
+		{'sd', nil, {'n', 'v', 'x'}},
 	},
 
 	config = function()
