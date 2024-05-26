@@ -1,5 +1,4 @@
 A.tex = {}
-A.tex.compiling = false
 vim.b.tex_flavor = [[make4ht -x -u -a info $* mathml,mathjax,frame,next]]
 vim.g.vimtex_compiler_latexmk = {
 	-- aux_dir = "/tmp/tex/aux/",
@@ -40,9 +39,6 @@ local changeExtToHtml = function(filePath)
 end
 
 local compile = function()
-	if A.tex.compiling then
-		return
-	end
 	local fileName = vim.api.nvim_buf_get_name(vim.fn.bufnr())
 	if fileName == "" then
 		print("File doesn't exists or haven't been saved.")
@@ -65,7 +61,7 @@ vim.keymap.set('n', '<leader>ac', function()
 	})
 	vim.print("Auto compilation started.")
 	vim.keymap.set('n', '<leader>ac', function()
-	print("Autocompilation already started.")
+		print("Autocompilation already started.")
 	end)
 end)
 vim.keymap.set('n', '<F5>', compile)

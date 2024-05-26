@@ -68,7 +68,7 @@ return {
 	),
 	s(
 		{
-			trig = ";l<",
+			trig = ";lan",
 			desc = "Writes \\langle.",
 			snippetType = "autosnippet",
 		},
@@ -76,10 +76,34 @@ return {
 	),
 	s(
 		{
-			trig = ";l>",
+			trig = ";ran",
 			desc = "Writes \\rangle.",
 			snippetType = "autosnippet",
 		},
 		t("\\rangle")
 	),
+	s(
+		{
+			trig = ";tt",
+			desc = "\\text command in math mode",
+			snippetType = "autosnippet",
+		},
+		fmta([[\text{<>}]], {i(0)})
+	),
+	s(
+		{
+			trig = ";/",
+			desc = "\\frac command",
+			snippetType = "autosnippet",
+		},
+		fmta("\\frac{<>}{<>}", {i(1), i(2)})
+	),
+	s(
+		{
+			trig = ";ra",
+			desc = "Writes \\rightarrow",
+			snippetType = "autosnippet",
+		},
+		t("\\rightarrow")
+	)
 }
