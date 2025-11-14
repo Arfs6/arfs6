@@ -127,14 +127,18 @@ set-title(){
       PS1=${ORIG}${TITLE}
       }
 
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 if [ $SHLVL == 1 ]; then
 	cd
 fi
 
-if [ -e $HOME/.bash_aliases ]; then
-	source $HOME/.bash_aliases
+if [ -e $HOME/.sh_aliases ]; then
+	source $HOME/.sh_aliases
 fi
-export EDITOR='vim'
+if [ -e $HOME/.sh_env ]; then
+	source $HOME/.sh_env
+fi
+export EDITOR='nvim'
 
 if [ $SHLVL == "1" ]; then
 	export POSH_TITLE="ON"
@@ -145,4 +149,6 @@ echo "Welcome $NAME"
 eval "$(oh-my-posh init bash --config ~/.poshthemes/arfs6.omp.json)"
 export GEM_HOME="$HOME/gems"
 export PATH="$HOME/gems/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 export NODE_PATH=/usr/lib/node_modules
+eval "$zoxide init bash --cmd cd"

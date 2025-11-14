@@ -1,4 +1,4 @@
-alias ea='nvim ~/.bash_aliases; source ~/.bash_aliases && echo "aliases sourced  --ok."'
+alias ea='nvim ~/.sh_aliases; source ~/.sh_aliases && echo "aliases sourced  --ok."'
 alias hsh="cd /home/alx/c/simple_shell"
 alias dcc="gcc -Wall -Werror -Wextra -pedantic -std=gnu89"
 alias add='git add'
@@ -9,7 +9,7 @@ alias bashrc='nvim ~/.bashrc'
 alias load-bash='source ~/.bashrc'
 alias load-aliases='source ~/.bash_aliases'
 alias vivi='vim ~/.vimrc'
-alias ..='cd ..'
+# alias ..='cd ..'
 alias null='/dev/null'
 alias status='git status'
 alias proj="cd /home/abuahmad/my_projects/c_proj/testing"
@@ -24,5 +24,5 @@ alias see="explorer.exe"
 alias wp="pclip > /tmp/vim-wp && nv /tmp/vim-wp && clip /tmp/vim-wp"
 alias todo='nvim ~/.todo '
 alias lg='lazygit'
-alias rm='mv --force -t ~/.local/share/Trash '
+alias rm='mv --force -t ~/.local/share/trash '
 alias mathml2latex='pandoc -f html --mathml -t latex'
