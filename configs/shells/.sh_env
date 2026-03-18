@@ -1,1 +1,4 @@
 export POSH_TITLE="ON"
+if [[ -n "$VIM" ]]; then
+export POSH_TITLE=
+	fi

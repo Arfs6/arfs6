@@ -1,61 +1,70 @@
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
-  "console_title_template": "{{ if .Env.POSH_TITLE }}{{ .Folder }}{{ if .Root }} :: root{{end}} - {{.Shell}} | {{ .Env.WSL_DISTRO_NAME }}{{end}}",
+  "console_title_template": "{{ if .Env.POSH_TITLE }}{{ .Folder }}{{ if .Root }} :: root{{end}} - {{.Shell}}{{end}}",
   "blocks": [
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "foreground": "lightYellow",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": "{{ .UserName }} ",
-          "type": "session"
+          "foreground": "lightYellow",
+          "type": "session",
+          "style": "plain"
         },
         {
-          "foreground": "cyan",
           "properties": {
+            "cache_duration": "none",
             "style": "folder"
           },
-          "style": "plain",
           "template": "<#ffffff>in</> {{ .Path }} ",
-          "type": "path"
+          "foreground": "cyan",
+          "type": "path",
+          "style": "plain"
         },
         {
-          "foreground": "#ff94df",
           "properties": {
             "branch_icon": " <#ff94df><b>\ue0a0 </b></>",
+            "cache_duration": "none",
             "fetch_stash_count": true
           },
-          "style": "plain",
           "template": "<#ffffff>on</> {{ .HEAD }}{{ if gt .StashCount 0 }} \uf692 {{ .StashCount }}{{ end }} ",
-          "type": "git"
+          "foreground": "#ff94df",
+          "type": "git",
+          "style": "plain"
         },
-	{
-          "foreground": "#bc93ff",
+        {
           "properties": {
+            "cache_duration": "none",
             "time_format": "3:04 PM <#ffffff>on</> Monday"
           },
-          "style": "diamond",
           "template": " {{ .CurrentDate | date .Format }} ",
-          "type": "time"
+          "foreground": "#bc93ff",
+          "type": "time",
+          "style": "diamond"
         }
-      ],
-      "type": "prompt"
+      ]
     },
     {
+      "type": "prompt",
       "alignment": "left",
-      "newline": true,
       "segments": [
         {
-          "foreground": "lightGreen",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": "$",
-          "type": "text"
+          "foreground": "lightGreen",
+          "type": "text",
+          "style": "plain"
         }
       ],
-      "type": "prompt"
+      "newline": true
     }
   ],
-  "final_space": true,
-  "version": 2
+  "version": 3,
+  "final_space": true
 }

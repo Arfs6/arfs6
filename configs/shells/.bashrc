@@ -140,15 +140,11 @@ if [ -e $HOME/.sh_env ]; then
 fi
 export EDITOR='nvim'
 
-if [ $SHLVL == "1" ]; then
-	export POSH_TITLE="ON"
-else
-	export POSH_TITLE=
-fi
 echo "Welcome $NAME"
 eval "$(oh-my-posh init bash --config ~/.poshthemes/arfs6.omp.json)"
 export GEM_HOME="$HOME/gems"
-export PATH="$HOME/gems/bin:$PATH"
+export PATH="/home/linuxbrew/.linuxbrew/lib/ruby/gems/3.4.0/bin:$PATH"
+export PATH="$HOME/node_modules/.bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export NODE_PATH=/usr/lib/node_modules
-eval "$zoxide init bash --cmd cd"
+eval "$(zoxide init bash --cmd cd)"
