@@ -1,3 +1,4 @@
+		lazy = false0
 local opt = vim.opt
 opt.title = true
 opt.ruler = false
@@ -47,3 +48,4 @@ opt.spell = true
 opt.isfname:append("@-@")
 opt.completeopt="menu,menuone,preview"
 opt.pumwidth=9999
+opt.more = false

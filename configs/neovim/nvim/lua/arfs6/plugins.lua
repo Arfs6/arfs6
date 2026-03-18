@@ -1,6 +1,7 @@
 return {
 	{
 		"nvim-lua/plenary.nvim",
+		lazy = false,
 	},
 
 	{
@@ -13,7 +14,7 @@ return {
 		dependencies = {
 			'nvim-telescope/telescope-fzf-native.nvim',
 			build =
-			'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
+			'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release --target install',
 		},
 	},
 
@@ -68,6 +69,13 @@ return {
 	},
 
 	{
+		"neovim/nvim-lspconfig",
+		enabled = true,
+		config = require("arfs6.configs.lsp_config").config,
+		lazy = false,
+	},
+
+	{
 		"williamboman/mason.nvim",
 		lazy = false,
 		enabled = true,
@@ -118,13 +126,6 @@ return {
 	},
 
 	{
-		"neovim/nvim-lspconfig",
-		config = require "arfs6.configs.lsp_config".config,
-		event = "VeryLazy",
-		enabled = true,
-	},
-
-	{
 		"NvChad/nvterm",
 		config = require "arfs6.configs.nvterm".config,
 		keys = require "arfs6.configs.nvterm".keys,
@@ -153,11 +154,11 @@ return {
 	},
 
 	{
-		"arfs6/keytones.nvim",
-		dir = "~/proj/nvim/keytones.nvim",
-		lazy = false,
-		enabled = false,
-		config = true,
+		"arfs6/scrappaper.nvim",
+		-- dir = "~/repos/scrappaper.nvim",
+		event = 'VeryLazy',
+		cmd = "ScrapPaper",
+		config = require('arfs6.configs.scrappaper').config,
 	},
 	{
 		"hrsh7th/nvim-pasta",
@@ -195,5 +196,12 @@ return {
 	{
 		"tpope/vim-fugitive",
 		cmd ={"Git", "G"},
+	},
+	{
+		'arfs6/mana.nvim',
+		dir = '~/repos/mana.nvim',
+		event = 'VeryLazy',
+		-- enabled = true,
+		enabled = false,
 	}
 }

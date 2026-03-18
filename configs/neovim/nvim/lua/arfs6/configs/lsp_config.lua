@@ -44,28 +44,14 @@ local options = {
 }
 
 m.config = function()
-	local lsp = require 'lspconfig'
 	local capabilities = require('cmp_nvim_lsp').default_capabilities()
 	capabilities.textDocument.completion.completionItem.snippetSupport = true
+	vim.lsp.config('*', {capabilities = capabilities})
 	for idx, server in ipairs(A.servers) do
 		idx = idx -- mute lsp
-		local opts = options[server]
-		if opts == nil then
-			opts = {}
-		end
-		opts.capabilities = capabilities
-		lsp[server].setup(opts)
+		-- require("lspconfig")[server].setup(options[server] or {})
+		vim.lsp.config(server, options[server] or {})
 	end
-	--[[ vim.api.nvim_create_autocmd({ 'VimEnter', }, {
-		callback = function()
-			vim.schedule(function()
-				vim.wait(2000, function()
-					vim.cmd('LspStart')
-					return vim.lsp.buf.server_ready()
-				end)
-			end)
-		end
-	}) ]]
 end
 
 return m

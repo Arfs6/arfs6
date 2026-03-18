@@ -7,7 +7,7 @@ A.servers = {
 	'clangd',
 	'cssls',
 	'html',
-	'ruff_lsp',
+	'ruff',
 	'yamlls',
 	'pyright',
 	"bashls",
@@ -19,7 +19,6 @@ require "arfs6.mappings"
 local plugins = require "arfs6.plugins"
 require "arfs6.lazy_config".load_plugins(plugins)
 require("arfs6.commands")
-A._scratch = require "arfs6.scratch"
 
 A.p = function(obj)
 	print(vim.inspect(obj))

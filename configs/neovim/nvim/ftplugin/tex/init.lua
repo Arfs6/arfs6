@@ -1,5 +1,5 @@
 A.tex = {}
-vim.b.tex_flavor = [[make4ht -x -u -a info $* mathml,mathjax,frame,next]]
+vim.b.tex_flavor = [[make4ht -s -x -u -a info $* mathml,mathjax,frame,next]]
 vim.g.vimtex_compiler_latexmk = {
 	-- aux_dir = "/tmp/tex/aux/",
 	out_dir = "/tmp/tex/out/",
@@ -47,6 +47,7 @@ local compile = function()
 
 	A.tex.compilerId = vim.fn.jobstart {
 		"make4ht",
+		"-s",
 		"-x",
 		"-u",
 		fileName,
@@ -56,7 +57,7 @@ local compile = function()
 end
 vim.keymap.set('n', '<leader>ac', function()
 	vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-		pattern = "*.tex",
+		pattern = "*.txt",
 		callback = compile
 	})
 	vim.print("Auto compilation started.")
