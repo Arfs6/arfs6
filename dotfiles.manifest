@@ -1,0 +1,12 @@
+configs/shells/.bashrc                 ~/.bashrc
+configs/shells/.zshrc                  ~/.zshrc
+configs/shells/.sh_aliases             ~/.sh_aliases
+configs/shells/.sh_env                 ~/.sh_env
+configs/tmux/.tmux.conf                ~/.tmux.conf
+configs/ohmyposh/arfs6.omp.json        ~/.poshthemes/arfs6.omp.json
+configs/neovim/nvim                    ~/.config/nvim
+configs/opencode/AGENTS.md             ~/.config/opencode/AGENTS.md
+scripts/bash/clip.sh                   ~/.local/bin/clip
+scripts/bash/paste.sh                  ~/.local/bin/paste
+scripts/python/match.py                ~/.local/bin/match
+scripts/python/battery_health.pyw      ~/.local/bin/battery_health.pyw

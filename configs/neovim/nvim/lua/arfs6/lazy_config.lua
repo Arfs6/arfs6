@@ -17,10 +17,10 @@ vim.opt.rtp:prepend(lazypath)
 m.load_plugins = function(plugins)
 	local opts = {
 		defaults = {
-			lazy = true,
+			-- lazy = true,
 		},
 		dev = {
-			path = "~/proj/nvim",
+			path = "~/repos/",
 		},
 		ui = {
 			custom_keys = {

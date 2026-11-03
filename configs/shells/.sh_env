@@ -2,3 +2,4 @@ export POSH_TITLE="ON"
 if [[ -n "$VIM" ]]; then
 export POSH_TITLE=
 	fi
+	export PATH="$HOME/go/bin:$PATH"

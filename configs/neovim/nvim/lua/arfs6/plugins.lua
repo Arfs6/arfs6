@@ -199,7 +199,7 @@ return {
 	},
 	{
 		'arfs6/mana.nvim',
-		dir = '~/repos/mana.nvim',
+		dir = '/mnt/c/Users/arfs6/repos/mana.nvim',
 		event = 'VeryLazy',
 		-- enabled = true,
 		enabled = false,
