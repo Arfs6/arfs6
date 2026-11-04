@@ -1,4 +1,3 @@
-		lazy = false0
 local opt = vim.opt
 opt.title = true
 opt.ruler = false

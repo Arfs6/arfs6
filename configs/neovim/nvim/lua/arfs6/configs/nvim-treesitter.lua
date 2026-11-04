@@ -1,11 +1,11 @@
 return {
-	config = function ()
+	config = function()
 		local configs = require("nvim-treesitter.configs")
 
 		configs.setup({
 			ensure_installed = {
 				"c",
-				-- "lua",
+				"lua",
 				"vim",
 				"vimdoc",
 				"query",
@@ -15,14 +15,16 @@ return {
 				"python",
 				"json",
 				"markdown",
+				"markdown_inline",
 				"yaml",
 				"latex",
 			},
+			auto_install = true,
 			sync_install = false,
 			highlight = {
-enable = true,
-additional_vim_regex_highlighting = false,
-},
+				enable = true,
+				additional_vim_regex_highlighting = false,
+			},
 			indent = { enable = true },
 		})
 	end,

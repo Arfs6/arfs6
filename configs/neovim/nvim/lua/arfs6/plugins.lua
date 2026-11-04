@@ -58,7 +58,7 @@ return {
 			require("nvim-treesitter.install").update({ with_sync = true })
 		end,
 		config = require("arfs6.configs.nvim-treesitter").config,
-		event = { "VeryLazy" },
+		lazy = false,
 		enabled = true,
 		dependencies = {
 			{
@@ -73,20 +73,9 @@ return {
 		enabled = true,
 		config = require("arfs6.configs.lsp_config").config,
 		lazy = false,
-	},
-
-	{
-		"williamboman/mason.nvim",
-		lazy = false,
-		enabled = true,
-		config = true,
-	},
-
-	{
-		"williamboman/mason-lspconfig.nvim",
-		config = require("arfs6.configs.mason_lsp_config").config,
-		lazy = false,
-		enabled = true,
+		dependencies = {
+			"hrsh7th/cmp-nvim-lsp",
+		},
 	},
 
 	{
@@ -175,14 +164,14 @@ return {
 
 	{
 		"zbirenbaum/copilot.lua",
-		event = 'insertenter',
-		cmd = 'Copilot',
-		config = require('arfs6.configs.copilot').config,
+		event = "InsertEnter",
+		cmd = "Copilot",
+		config = require("arfs6.configs.copilot").config,
 	},
 
 	{
 		"theprimeagen/harpoon",
-		config = require("arfs6.configs.harpoon"),
+		config = require("arfs6.configs.harpoon").config,
 		keys = require("arfs6.configs.harpoon").keys,
 		enabled = false,
 	},

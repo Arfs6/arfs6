@@ -1,12 +1,14 @@
 local vim = vim
 A = {}
 
--- lsp and mason servers
+-- globally installed LSP servers
 A.servers = {
 	'lua_ls',
 	'clangd',
+	'gopls',
 	'cssls',
 	'html',
+	'ts_ls',
 	'ruff',
 	'yamlls',
 	'pyright',

@@ -6,6 +6,7 @@ configs/tmux/.tmux.conf                ~/.tmux.conf
 configs/ohmyposh/arfs6.omp.json        ~/.poshthemes/arfs6.omp.json
 configs/neovim/nvim                    ~/.config/nvim
 configs/opencode/AGENTS.md             ~/.config/opencode/AGENTS.md
+configs/opencode/LEARNING.md           ~/.config/opencode/LEARNING.md
 scripts/bash/clip.sh                   ~/.local/bin/clip
 scripts/bash/paste.sh                  ~/.local/bin/paste
 scripts/python/match.py                ~/.local/bin/match
