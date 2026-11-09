@@ -1,7 +1,7 @@
 ---
 description: Review the current changes without editing them
 agent: reviewer
-subtask: true
+subagent: true
 ---
 
 Review the current changes:

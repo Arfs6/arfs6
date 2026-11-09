@@ -231,5 +231,7 @@ install_timer
 
 if [ "$dry_run" -eq 0 ]; then
   log "setup complete"
-  [ -d "$backup_root" ] && log "backups: $backup_root"
+  if [ -d "$backup_root" ]; then
+    log "backups: $backup_root"
+  fi
 fi

@@ -2,11 +2,69 @@
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "mentor",
   "model": "opencode/big-pickle",
-  "subagent_depth": 1,
-  "permission": {
-    "edit": "ask",
-    "bash": "ask",
-    "webfetch": "allow",
-    "websearch": "allow"
-  }
+
+  // Format files after the agent edits them, using available built-in
+  // formatters. A formatter only runs when its executable or project
+  // dependency is present.
+  "formatter": true,
+
+  "experimental": {
+    // Subagents cannot start their own subagents.
+    "subagent_depth": 1,
+    // Give agents a todo tool for multi-step work and plan tracking.
+    "todo": true
+  },
+
+  "watcher": {
+    "ignore": ["node_modules/**", "dist/**", "coverage/**", ".git/**"]
+  },
+
+  // Ordered rules. The last matching rule wins, so broad defaults come
+  // first and specific exceptions come later.
+  "permissions": [
+    // Anything outside the active project asks first.
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+    // The agent's own configuration and learning ledger are a deliberate
+    // exception, so reading the ledger does not prompt on every session.
+    { "action": "external_directory", "resource": "~/.config/opencode/*", "effect": "allow" },
+
+    // Reads are allowed, except for secret-bearing files.
+    { "action": "read", "resource": "*", "effect": "allow" },
+    { "action": "read", "resource": "*.env", "effect": "ask" },
+    { "action": "read", "resource": "*.env.*", "effect": "ask" },
+    { "action": "read", "resource": "*.env.example", "effect": "allow" },
+    { "action": "read", "resource": "**/.ssh/**", "effect": "ask" },
+    { "action": "read", "resource": "**/id_rsa*", "effect": "ask" },
+    { "action": "read", "resource": "**/*.pem", "effect": "ask" },
+    { "action": "read", "resource": "**/*.key", "effect": "ask" },
+    { "action": "read", "resource": "**/.aws/**", "effect": "ask" },
+    { "action": "read", "resource": "**/.config/gcloud/**", "effect": "ask" },
+    { "action": "read", "resource": "**/.config/gh/**", "effect": "ask" },
+    { "action": "read", "resource": "**/.docker/config.json", "effect": "ask" },
+    { "action": "read", "resource": "**/.kube/config", "effect": "ask" },
+    { "action": "read", "resource": "**/.npmrc", "effect": "ask" },
+    { "action": "read", "resource": "**/.pypirc", "effect": "ask" },
+    { "action": "read", "resource": "**/.git-credentials", "effect": "ask" },
+
+    // State-changing actions ask by default. Agents that need broader
+    // access add their own narrow overrides.
+    { "action": "edit", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "*", "effect": "ask" },
+    { "action": "subagent", "resource": "*", "effect": "ask" },
+
+    // These are safe and local to the configured skills and web tools.
+    { "action": "skill", "resource": "*", "effect": "allow" },
+    { "action": "webfetch", "resource": "*", "effect": "allow" },
+    { "action": "websearch", "resource": "*", "effect": "allow" },
+    { "action": "question", "resource": "*", "effect": "allow" }
+  ],
+
+  // Policies are hard denials. They run after permission rules and saved
+  // approvals, so an agent cannot override them with a broad shell allow.
+  "policies": [
+    { "action": "tool.use", "resource": "shell:sudo *", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:mkfs*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:shutdown*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:reboot*", "effect": "deny" }
+  ]
 }

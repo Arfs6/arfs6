@@ -1,7 +1,7 @@
 ---
 description: Update documentation without changing code
 agent: tech-writer
-subtask: true
+subagent: true
 ---
 
 Update the documentation for:

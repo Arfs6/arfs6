@@ -6,7 +6,7 @@ configs/tmux/.tmux.conf                ~/.tmux.conf
 configs/ohmyposh/arfs6.omp.json        ~/.poshthemes/arfs6.omp.json
 configs/neovim/nvim                    ~/.config/nvim
 configs/opencode/opencode.jsonc        ~/.config/opencode/opencode.jsonc
-configs/opencode/tui.jsonc             ~/.config/opencode/tui.jsonc
+configs/opencode/cli.json              ~/.config/opencode/cli.json
 configs/opencode/AGENTS.md             ~/.config/opencode/AGENTS.md
 configs/opencode/LEARNING.md           ~/.config/opencode/LEARNING.md
 configs/opencode/README.md             ~/.config/opencode/README.md

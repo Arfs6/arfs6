@@ -1,7 +1,7 @@
 ---
 description: Diagnose a problem with evidence
 agent: debugger
-subtask: true
+subagent: true
 ---
 
 Diagnose this problem:

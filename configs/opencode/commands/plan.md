@@ -1,7 +1,7 @@
 ---
 description: Create a read-only implementation plan
-agent: planner
-subtask: true
+agent: plan
+subagent: true
 ---
 
 Create an implementation plan for:

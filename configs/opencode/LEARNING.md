@@ -17,6 +17,19 @@ according to `AGENTS.md`.
 - Never use an entry to skip checking my understanding. Ask me to
   recall, predict, or apply the idea.
 
+## Automation
+
+- Agents update this file automatically from evidence in the conversation.
+- Evidence must come from me: an explanation in my own words, a prediction,
+  code I wrote, a command I ran, a debugging conclusion, or a review finding.
+- Never treat an agent explanation, agent-written code, or an agent-run
+  command as evidence.
+- Record the operation, not only the topic.
+- If the evidence is ambiguous, ask me one focused confirmation question.
+- The mentor owns this file. Other agents update it only when I explicitly
+  ask them to.
+- Use `/ledger` to review the recent conversation.
+
 ## Status key
 
 - `new` — not studied yet
@@ -31,6 +44,9 @@ according to `AGENTS.md`.
   parser.
 - Kafka-backed observability playground: learn Kafka basics by sending
   OpenTelemetry spans from the app to an observer program.
+- OpenCode 2 configuration: finish and verify the v2 migration. Next check:
+  explain how agent permissions are ordered and why policies cannot be
+  overridden.
 
 ## Concepts
 
@@ -42,6 +58,9 @@ according to `AGENTS.md`.
 | Kafka fundamentals (topic, partition, offset, consumer group) | new | Asked how to use Kafka as transport for an observability program | 2026-11-04 | Explain why ordering is per-partition and how a consumer group splits partitions |
 | Kafka Go producer/consumer | new | — | 2026-11-04 | Write a minimal producer and consumer against a local broker |
 | Observability pipeline (SDK → exporter → backend) | learning | Has used an OTel TracerProvider with a stdout exporter | 2026-11-04 | Explain the path of a span from handler to observer |
+| OpenCode v2 agent design | learning | Chose the merged plan agent, rejected duplicate coding and fixer subagents, and set the mentor's ledger-only edit exception | 2026-11-09 | Explain why a second coding subagent would create a mentor bypass |
+| OpenCode v2 permission ordering | new | Encountered last-match-wins and policy precedence during the migration | 2026-11-09 | Predict the winner when a broad allow is followed by a narrow ask |
+| OpenCode v2 file layout | learning | Reviewed the migration from `tui.jsonc` to `cli.json` and the v2 agent and command fields | 2026-11-09 | Write one agent file from memory and explain each field |
 
 ## Session log
 
@@ -58,3 +77,8 @@ according to `AGENTS.md`.
   verified a 3-partition topic, key-to-partition hashing, and
   consumer-group assignment with kcat. Awaiting the user's own
   explanation of the observed behaviour.
+- 2026-11-09: Chose the v2 configuration design: merged the planning
+  agents, rejected duplicate coding and fixer subagents, made the mentor
+  the ledger owner with a `LEARNING.md`-only edit exception, and set the
+  permission guardrails. Implementation is in progress; no independent
+  practice yet.

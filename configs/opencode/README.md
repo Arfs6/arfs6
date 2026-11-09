@@ -5,21 +5,23 @@ and native Ubuntu through the `arfs6` dotfiles repository.
 
 The configuration is designed for learning first: `mentor` is the default
 agent, `implementer` is available when I explicitly want code written, and
-small read-only subagents handle planning, debugging, review, and technical
-writing.
+read-only subagents handle planning, debugging, review, and technical writing.
+The `plan` agent can run as either a primary agent or a subagent.
 
 ## Files
 
-- `opencode.jsonc`: global server/runtime configuration, default agent, model,
-  and fallback permissions.
-- `tui.jsonc`: TUI keybindings and attention notifications.
-- `agents/`: the two primary agents and four subagents.
+- `opencode.jsonc`: global server/runtime configuration: default agent, model,
+  formatter, experimental settings, ordered permissions, and hard policies.
+- `cli.json`: terminal settings: keybindings, permission prompts, and attention
+  notifications and sounds.
+- `agents/`: two primary agents, three subagent-only agents, and the `plan`
+  agent, which can run as either.
 - `commands/`: reusable `/learn`, `/implement`, `/plan`, `/debug`, `/review`,
-  and `/docs` commands.
+  `/docs`, and `/ledger` commands.
 - `skills/`: concise references for Git, Python, Go, Lua, JavaScript, Zig, HTML,
   and CSS.
-- `AGENTS.md`: the main teaching, accessibility, review, debugging, and
-  completion-report rules.
+- `AGENTS.md`: the main teaching, accessibility, review, debugging, permission,
+  and completion-report rules.
 - `LEARNING.md`: my learning ledger. It records demonstrated understanding, not
   things an agent once explained.
 - `README.md`: this document.
@@ -29,20 +31,26 @@ writing.
 ### Primary agents
 
 - `mentor`: the default. It teaches, asks questions, reviews my attempts, and
-  gives hints. It cannot edit files, run shell commands, or invoke the
-  implementer.
+  gives hints. It may edit only `LEARNING.md`; it cannot edit project files, run
+  shell commands, or invoke `implementer`.
 - `implementer`: implementation mode. It writes code, explains the design, runs
-  verification, and leaves a follow-up exercise.
+  verification, and leaves a follow-up exercise. Unless I explicitly ask it to
+  proceed without discussion, it states the plan and waits for approval before
+  changing files.
 
 ### Subagents
 
-- `planner`: read-only planning and task breakdown.
-- `debugger`: evidence-based diagnosis without editing files.
-- `reviewer`: read-only code review with severity labels.
-- `tech-writer`: documentation-only edits.
+- `plan`: read-only planning and task breakdown. It can also run as a primary
+  agent.
+- `debugger`: evidence-based diagnosis without editing files. It stays inside
+  the current project.
+- `reviewer`: read-only code review with severity labels. It reports findings
+  and does not fix them.
+- `tech-writer`: documentation-only edits. It never edits the learning ledger
+  or agent, command, and skill definitions.
 
-Primary agents know these subagents and may invoke them deliberately. Both
-primary prompts list them explicitly.
+Primary agents know these subagents and may invoke them deliberately. The
+`plan` agent is read-only in both roles.
 
 ### Switching modes
 
@@ -54,6 +62,8 @@ You can also use:
 - `/learn` to start a learning-mode session.
 - `/implement` to start an implementation-mode session.
 - `/plan`, `/debug`, `/review`, and `/docs` to invoke the matching subagent.
+- `/ledger` to review the recent conversation and update `LEARNING.md` from
+  demonstrated evidence.
 
 ### Per-repository default
 
@@ -127,11 +137,13 @@ context for notification permissions.
 
 ### TUI attention
 
-`tui.jsonc` enables `attention` with sound and desktop notifications. The TUI
-requests attention for questions, permissions, session errors, and completed
-sessions, and normally only when the terminal is blurred. This is the built-in
-TUI behaviour; it does not separate completion from input requests. Set
-`attention.enabled` to `false` if completion sounds are distracting.
+`cli.json` enables `attention.notifications` and `attention.sound` with a
+volume of `0.4` and the `opencode.default` sound pack. The TUI requests
+attention for questions, permissions, session errors, completed sessions, and
+finished subagents. Built-in sounds are used for each event. To override one
+event, add a path under `attention.sounds` for `default`, `question`,
+`permission`, `error`, `done`, or `subagent_done`; an unreadable file falls back
+to the built-in sound.
 
 TUI desktop notifications depend on the terminal and on tmux configuration.
 Sound on WSL uses WSLg PulseAudio. If sound fails, check `paplay` and the WSLg
@@ -171,23 +183,41 @@ Skills are loaded on demand by the `skill` tool. They are intentionally short:
 
 ## Permissions
 
-The global fallback asks before edits and shell commands. Agent permissions
-override that fallback:
+`opencode.jsonc` uses one ordered `permissions` array. The last matching rule
+wins, so broad defaults come first and narrow exceptions follow. The global
+defaults ask before:
 
-- `mentor`: no edits, no shell commands, no implementer subagent.
-- `implementer`: edits and shell commands allowed.
-- `planner`: read-only.
-- `debugger`: read-only, but may run non-destructive diagnostic commands.
-- `reviewer`: read-only, with only a few Git commands allowed.
-- `tech-writer`: documentation files only.
+- reading secret-bearing files such as `.env`, SSH keys, cloud credentials,
+  package-manager tokens, and Git credentials;
+- editing files, running shell commands, and invoking subagents;
+- accessing anything outside the active project.
+
+Agent rules append after the global rules:
+
+- `mentor`: edits only `LEARNING.md`; no shell commands; may invoke `plan`,
+  `debugger`, `reviewer`, and `tech-writer`.
+- `implementer`: edits and shell commands allowed, with repeated asks for
+  destructive commands such as `rm`, `mv`, `dd`, history rewrites, `git push`,
+  and package-manager changes.
+- `plan`: read-only; shell commands ask.
+- `debugger`: read-only, but may run diagnostic commands; it asks before
+  destructive commands and stays inside the project.
+- `reviewer`: read-only, with only a few Git inspection commands allowed.
+- `tech-writer`: documentation files only; it cannot edit the learning ledger or
+  agent, command, and skill definitions.
+
+`policies` hard-deny `sudo`, `mkfs`, `shutdown`, and `reboot`. Policies run
+after permissions and saved approvals, so an agent cannot override them with a
+broad shell allow.
 
 These are guardrails, not a security boundary. Review diffs and commands before
-approving them.
+approving them. A saved approval is project-scoped and is not permission for
+unrelated commands.
 
-OpenCode 2 names the direct shell tool `shell`. The configuration and v2 docs
-still use the legacy `bash` permission key, which OpenCode maps to the `shell`
-tool. Agents are told to call `shell` directly and to use `execute` only for the
-Code Mode tools listed in its catalog.
+OpenCode 2 names the direct shell tool `shell`. The configuration uses the v2
+`shell` action, not the legacy `bash` key. Agents are told to call `shell`
+directly and to use `execute` only for the Code Mode tools listed in its
+catalog.
 
 ## Commit messages
 
@@ -233,16 +263,19 @@ Useful commands:
 
 ```bash
 opencode --version
-opencode debug config
-opencode debug agents
+opencode debug config --standalone
+opencode debug agents --standalone
 opencode models
 opencode service status
 opencode pair
 ```
 
-`opencode debug config` shows the merged configuration for the current
-directory. `opencode debug agents` shows the discovered primary and subagent
-definitions. Run both from the repository you are working in.
+`opencode debug config --standalone` shows the merged configuration for the
+current directory without connecting to the background service.
+`opencode debug agents --standalone` shows the discovered primary and subagent
+definitions. The running service keeps the configuration it loaded at startup,
+so without `--standalone` these commands can show stale settings. Restart the
+service to apply changes to the active TUI.
 
 The v2 documentation still mentions `opencode web` in places, but the installed
 v2.2.6 binary exposes `opencode serve` and `opencode pair` instead. Trust the
@@ -255,9 +288,14 @@ opencode run --help
 
 ## Limitations
 
-- TUI attention does not distinguish input requests from completed sessions.
+- Web notification categories are browser-profile settings. Permission requests
+  and questions are enabled by default; errors and agent completion must be
+  enabled manually in the web settings.
 - Web notifications require an open session tab and browser permission.
 - The `opencode serve` migration race is unresolved; use `opencode pair`.
 - TUI desktop notifications may depend on tmux and the terminal emulator.
-- The v1 plugin dependency in the old `package.json` is not needed for this
-  configuration. No custom plugin is used.
+- The running service must be restarted to apply configuration changes. Use
+  `--standalone` to validate the files without restarting it.
+- Formatters run only when the built-in formatter's executable or project
+  dependency is available.
+- No custom plugin is used.

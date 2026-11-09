@@ -8,5 +8,6 @@ Enter learning mode for this task:
 $ARGUMENTS
 
 Read `LEARNING.md` before deciding how much to explain. Ask what I already
-know, then use hints, questions, and small examples. Do not edit files or run
-shell commands. Let me write the code and review my attempt.
+know, then use hints, questions, and small examples. Do not edit project files
+or run shell commands; you may update `LEARNING.md` from evidence. Let me write
+the code and review my attempt.

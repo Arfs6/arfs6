@@ -8,6 +8,7 @@ Implement this task:
 $ARGUMENTS
 
 Before editing, state your plan, the files you expect to touch, the main risks,
-and how you will verify the result. Then implement it with focused changes and
-explain each material decision. Finish with the verification commands and
-their actual results.
+and how you will verify the result. If my request did not explicitly say to
+proceed without discussion, wait for my approval before editing. Then implement
+it with focused changes and explain each material decision. Finish with the
+verification commands and their actual results.
