@@ -67,12 +67,17 @@ make_commit_message() {
   local msg
   local prompt
 
-  fallback="chore: sync dotfiles $(date '+%Y-%m-%d')"
+  fallback="chore(arfs6): sync dotfiles $(date '+%Y-%m-%d')"
 
   if [ "$use_ai" -eq 1 ] && command -v opencode >/dev/null 2>&1; then
-    prompt="Write one concise git commit message for the changes below.
-Use imperative mood, keep it under 72 characters, and output only the message.
-Do not use tools, quotes, markdown, or an explanation.
+    prompt="Write the git commit message for the staged changes below.
+Use this format exactly:
+type(area): short summary
+
+Explain what changed and why. Keep the summary under 72 characters.
+Choose type from feat, fix, docs, refactor, test, chore, style, perf, build, ci.
+Use a file name or area name for area.
+Output only the commit message. Do not use tools, quotes, markdown, or an explanation.
 
 Files changed:
 $stat
@@ -98,20 +103,28 @@ for line in sys.stdin:
     if value:
         texts.append(value)
 
-text = (texts[-1] if texts else "").strip()
-for line in text.splitlines():
-    line = line.strip().strip("`").strip()
-    if line:
-        print(line)
-        break
+text = "\n".join(texts).strip()
+lines = []
+for raw_line in text.splitlines():
+    line = raw_line.strip()
+    if line.startswith("```"):
+        continue
+    if line.startswith("### "):
+        line = line[4:]
+    lines.append(line)
+
+while lines and not lines[0]:
+    lines.pop(0)
+while lines and not lines[-1]:
+    lines.pop()
+
+print("\n".join(lines))
 ' 2>/dev/null || true)"
 
-    msg="${msg#\#\#\# }"
-    msg="$(printf '%s' "$msg" | sed -e 's/[[:space:]]\+/ /g' -e 's/^ //' -e 's/ $//')"
     msg="${msg#\"}"
     msg="${msg%\"}"
     [ -n "$msg" ] || msg="$fallback"
-    printf '%s\n' "${msg:0:100}"
+    printf '%s\n' "$msg"
     return 0
   fi
 

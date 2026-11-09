@@ -94,7 +94,14 @@ configs/shells/.sh_env             -> ~/.sh_env
 configs/tmux/.tmux.conf            -> ~/.tmux.conf
 configs/ohmyposh/arfs6.omp.json    -> ~/.poshthemes/arfs6.omp.json
 configs/neovim/nvim                -> ~/.config/nvim
+configs/opencode/opencode.jsonc    -> ~/.config/opencode/opencode.jsonc
+configs/opencode/tui.jsonc         -> ~/.config/opencode/tui.jsonc
 configs/opencode/AGENTS.md         -> ~/.config/opencode/AGENTS.md
+configs/opencode/LEARNING.md       -> ~/.config/opencode/LEARNING.md
+configs/opencode/README.md         -> ~/.config/opencode/README.md
+configs/opencode/agents            -> ~/.config/opencode/agents
+configs/opencode/commands          -> ~/.config/opencode/commands
+configs/opencode/skills            -> ~/.config/opencode/skills
 scripts/bash/clip.sh               -> ~/.local/bin/clip
 scripts/bash/paste.sh              -> ~/.local/bin/paste
 scripts/python/match.py            -> ~/.local/bin/match
@@ -111,7 +118,7 @@ To add another file or directory, put it in this repository, add a line to
 ├── configs/          Tool configurations
 │   ├── neovim/       Neovim configuration
 │   ├── ohmyposh/     Prompt theme
-│   ├── opencode/     opencode agent instructions
+│   ├── opencode/     opencode agents, commands, skills, and TUI settings
 │   ├── shells/       bash, zsh, aliases, and environment
 │   └── tmux/         tmux configuration
 ├── scripts/          Utility scripts and the sync implementation
