@@ -5,120 +5,6 @@ permissions:
   - action: edit
     resource: "*"
     effect: allow
-  - action: shell
-    resource: "*"
-    effect: allow
-  - action: shell
-    resource: "rm *"
-    effect: ask
-  - action: shell
-    resource: "rmdir *"
-    effect: ask
-  - action: shell
-    resource: "mv *"
-    effect: ask
-  - action: shell
-    resource: "dd *"
-    effect: ask
-  - action: shell
-    resource: "truncate *"
-    effect: ask
-  - action: shell
-    resource: "shred *"
-    effect: ask
-  - action: shell
-    resource: "chmod -R *"
-    effect: ask
-  - action: shell
-    resource: "chown -R *"
-    effect: ask
-  - action: shell
-    resource: "chgrp -R *"
-    effect: ask
-  - action: shell
-    resource: "git push *"
-    effect: ask
-  - action: shell
-    resource: "git reset --hard*"
-    effect: ask
-  - action: shell
-    resource: "git clean *"
-    effect: ask
-  - action: shell
-    resource: "git checkout -- *"
-    effect: ask
-  - action: shell
-    resource: "git restore *"
-    effect: ask
-  - action: shell
-    resource: "git branch -D *"
-    effect: ask
-  - action: shell
-    resource: "git tag -d *"
-    effect: ask
-  - action: shell
-    resource: "git rebase *"
-    effect: ask
-  - action: shell
-    resource: "git filter-branch*"
-    effect: ask
-  - action: shell
-    resource: "git stash drop*"
-    effect: ask
-  - action: shell
-    resource: "git stash clear*"
-    effect: ask
-  - action: shell
-    resource: "kill *"
-    effect: ask
-  - action: shell
-    resource: "pkill *"
-    effect: ask
-  - action: shell
-    resource: "killall *"
-    effect: ask
-  - action: shell
-    resource: "systemctl *"
-    effect: ask
-  - action: shell
-    resource: "mount *"
-    effect: ask
-  - action: shell
-    resource: "umount *"
-    effect: ask
-  - action: shell
-    resource: "apt *"
-    effect: ask
-  - action: shell
-    resource: "apt-get *"
-    effect: ask
-  - action: shell
-    resource: "dnf *"
-    effect: ask
-  - action: shell
-    resource: "yum *"
-    effect: ask
-  - action: shell
-    resource: "pacman *"
-    effect: ask
-  - action: shell
-    resource: "brew *"
-    effect: ask
-  - action: shell
-    resource: "bash -c*"
-    effect: ask
-  - action: shell
-    resource: "sh -c*"
-    effect: ask
-  - action: shell
-    resource: "zsh -c*"
-    effect: ask
-  - action: shell
-    resource: "eval *"
-    effect: ask
-  - action: shell
-    resource: "xargs *"
-    effect: ask
   - action: subagent
     resource: "*"
     effect: allow
@@ -156,6 +42,11 @@ commands; `execute` is only for the Code Mode tools listed in its catalog.
 ## After editing
 
 - Review the diff.
+- Invoke the `reviewer` subagent on the working-tree diff after every
+  material change-set, then address or report its findings before
+  reporting completion. For a trivial change such as a typo or a comment,
+  review the diff yourself and say so. Track the review step with the todo
+  tool so it is not skipped.
 - Run the most relevant formatting, linting, type-checking, build, and test
   commands available in the project.
 - Report the actual commands and results.
@@ -166,8 +57,10 @@ commands; `execute` is only for the Code Mode tools listed in its catalog.
 ## Permission behaviour
 
 - Explain what you are about to do before you do it.
-- When a permission prompt asks for approval, explain the command and its
-  effect before the user decides.
+- Read-only inspection such as `git status` or `gh issue list` runs without
+  a prompt; do not pad the report with permission notes for it.
+- When a permission prompt asks for approval, it is an effectful command:
+  explain the command and its effect before the user decides.
 - Ask before a destructive command even when a permission prompt would also
   ask. Do not rely on the prompt as your only warning.
 - Do not use a broad approval to run commands outside the current project.

@@ -34,7 +34,8 @@ The `plan` agent can run as either a primary agent or a subagent.
   gives hints. It may edit only `LEARNING.md`; it cannot edit project files, run
   shell commands, or invoke `implementer`.
 - `implementer`: implementation mode. It writes code, explains the design, runs
-  verification, and leaves a follow-up exercise. Unless I explicitly ask it to
+  verification, reviews every material change-set with the `reviewer`
+  subagent, and leaves a follow-up exercise. Unless I explicitly ask it to
   proceed without discussion, it states the plan and waits for approval before
   changing files.
 
@@ -184,24 +185,42 @@ Skills are loaded on demand by the `skill` tool. They are intentionally short:
 ## Permissions
 
 `opencode.jsonc` uses one ordered `permissions` array. The last matching rule
-wins, so broad defaults come first and narrow exceptions follow. The global
-defaults ask before:
+wins, so broad defaults come first and narrow exceptions follow. The posture
+is: allow routine work, ask before effectful operations, review changes
+afterwards.
 
-- reading secret-bearing files such as `.env`, SSH keys, cloud credentials,
-  package-manager tokens, and Git credentials;
-- editing files, running shell commands, and invoking subagents;
-- accessing anything outside the active project.
+- paths outside the active project ask first, except the configuration's own
+  directory `~/.config/opencode/*`, so reading the learning ledger never
+  prompts. This covers external paths used by `read`, `edit`, `write`, and
+  `patch`, plus a shell command's working directory and directories its
+  scanner infers;
+- reads are allowed except secret-bearing files such as `.env`, SSH keys,
+  cloud credentials, package-manager tokens, and Git credentials, which ask;
+- shell commands run without prompting, so `git status`, `gh issue list`,
+  builds, and tests are frictionless. Effectful commands ask: `git push`,
+  `git rm`, `git mv`, history rewrites, and commands that discard uncommitted
+  changes (`git restore`, `git clean`, `git reset --hard`); `rm`, `mv`, `dd`,
+  `truncate`, `shred`, and recursive `chmod`/`chown`; `gh` mutations
+  (`gh pr merge`,
+  `gh issue close`, `gh repo delete`, `gh secret set`, `gh api`); Docker
+  state destruction (`docker rm`, `docker volume rm`, `docker compose
+  down`); publishes (`npm publish`, `cargo publish`, `twine upload`);
+  remote execution (`ssh`, `scp`, `rsync`); process and service control
+  (`kill`, `systemctl`, `mount`); system package managers; and nested
+  shell (`bash -c`, `sh -c`, `eval`, `xargs`);
+- edits run without prompting, except secret-bearing files; the mandatory
+  change review below is the control that catches mistakes;
+- subagents run without prompting; each keeps its own restrictions.
 
 Agent rules append after the global rules:
 
 - `mentor`: edits only `LEARNING.md`; no shell commands; may invoke `plan`,
   `debugger`, `reviewer`, and `tech-writer`.
-- `implementer`: edits and shell commands allowed, with repeated asks for
-  destructive commands such as `rm`, `mv`, `dd`, history rewrites, `git push`,
-  and package-manager changes.
-- `plan`: read-only; shell commands ask.
-- `debugger`: read-only, but may run diagnostic commands; it asks before
-  destructive commands and stays inside the project.
+- `implementer`: edits and subagents allowed; shell uses the global posture.
+- `plan`: edits denied; shell uses the global posture; read-only by
+  instruction.
+- `debugger`: edits and subagents denied; shell uses the global posture for
+  diagnostics.
 - `reviewer`: read-only, with only a few Git inspection commands allowed.
 - `tech-writer`: documentation files only; it cannot edit the learning ledger or
   agent, command, and skill definitions.
@@ -210,14 +229,26 @@ Agent rules append after the global rules:
 after permissions and saved approvals, so an agent cannot override them with a
 broad shell allow.
 
-These are guardrails, not a security boundary. Review diffs and commands before
-approving them. A saved approval is project-scoped and is not permission for
-unrelated commands.
+These are guardrails, not a security boundary. Prefix rules cannot recognize
+every dangerous command, and the shell scanner infers directories from
+command text only on a best-effort basis, so an unlisted effectful command,
+or an outside path the scanner does not recognize, can run without a prompt.
+Review diffs and commands, and remember a saved approval is project-scoped and
+is not permission for unrelated commands.
 
 OpenCode 2 names the direct shell tool `shell`. The configuration uses the v2
 `shell` action, not the legacy `bash` key. Agents are told to call `shell`
 directly and to use `execute` only for the Code Mode tools listed in its
 catalog.
+
+## Change review
+
+Every material change-set is reviewed before the work is reported complete.
+The editing agent invokes the `reviewer` subagent on the working-tree diff and
+addresses or reports its findings. `tech-writer` cannot spawn subagents
+(`subagent_depth: 1`), so the primary agent that invoked it reviews its diffs;
+trivial changes such as typo fixes get a documented self-review of the diff.
+`/review` requests a review manually at any time.
 
 ## Commit messages
 

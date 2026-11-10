@@ -300,7 +300,11 @@ While editing:
 After editing:
 
 -   State what you edited and why that change addresses the task.
--   Review the diff.
+-   Review every change-set before reporting the work complete: invoke
+    the `reviewer` subagent on the working-tree diff for a material
+    change and address or report its findings. For a trivial change,
+    such as a typo or a comment, review the diff yourself and say so.
+    Never report work as complete while an unreviewed change remains.
 -   Run the most relevant available formatting, linting, build, and test
     commands.
 -   Explain what each important check verifies and report its actual
@@ -309,26 +313,45 @@ After editing:
 
 ## 8. Permissions and outside-project access
 
-The global configuration is deliberately cautious. Explain it rather than
-working around it.
+The global configuration allows routine work without prompts, asks before
+effectful operations, and relies on the mandatory change review as the
+compensating control for edits. Explain it rather than working around it.
 
--   Reading secret-bearing files asks first. This includes `.env` files,
-    SSH keys, cloud credentials, package-manager tokens, and Git
-    credentials.
--   Editing files, running shell commands, and invoking subagents ask by
-    default. Agents with broader access add narrow rules, not blanket
-    bypasses.
--   Anything outside the active project asks first. If a task needs an
-    outside path, explain why and ask before reading or changing it.
--   Destructive commands ask even when the agent has broad shell access.
-    `sudo`, `mkfs`, `shutdown`, and `reboot` are hard-denied by policy and
+-   Reading or editing secret-bearing files asks first. This includes
+    `.env` files, SSH keys, cloud credentials, package-manager tokens,
+    and Git credentials.
+-   Shell commands run without prompting, so read-only inspection such as
+    `git status` or `gh issue list` is frictionless. Commands with
+    external effects ask first: pushing to a remote, deleting or moving
+    files, rewriting history, discarding uncommitted changes, mutating
+    GitHub through `gh`, destroying Docker state, publishing packages,
+    remote execution with `ssh`, `scp`, or `rsync`, process and service
+    control, system package-manager changes, and nested shell (`bash -c`,
+    `eval`, `xargs`).
+-   File edits run without prompting; the mandatory review after each
+    change-set catches out-of-context or incomplete changes before the
+    work is reported complete.
+-   Subagents run without prompting. Each subagent's own permission rules
+    still constrain what it can do.
+-   Anything outside the active project asks first, except the
+    configuration's own directory `~/.config/opencode/`, which stays
+    allowed so the learning ledger does not prompt on every session. If a
+    task needs any other outside path, explain why and ask before reading
+    or changing it.
+-   The effectful-command list is a guardrail, not a security boundary.
+    An unlisted effectful command can run without a prompt, so review
+    commands and diffs rather than assuming the rules catch everything.
+-   `sudo`, `mkfs`, `shutdown`, and `reboot` are hard-denied by policy and
     cannot be overridden by an agent rule or a saved approval.
 -   Explain the command and its effect before I decide on a permission
     prompt. Do not treat a saved approval as permission for unrelated
     commands.
--   The `plan` agent is read-only, the `debugger` stays inside the
-    project, the `reviewer` reports without fixing, the `tech-writer`
-    edits documentation only, and the `implementer` makes changes.
+-   The `plan` agent is read-only by instruction: its edit tool is
+    denied and effectful commands ask, but unlisted shell commands are
+    technically possible, so review its output. The `debugger` stays
+    inside the project, the `reviewer` reports without fixing, the
+    `tech-writer` edits documentation only, and the `implementer` makes
+    changes.
 -   No agent may use a subagent to bypass its own limits.
 
 ## 9. Pair programming and senior-engineer review
