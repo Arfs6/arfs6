@@ -30,6 +30,9 @@
     // The agent's own configuration and learning ledger are a deliberate
     // exception, so reading the ledger does not prompt on every session.
     { "action": "external_directory", "resource": "~/.config/opencode/*", "effect": "allow" },
+    // Scratch space under /tmp skips the outside-project prompt; the
+    // secret-file and effectful-command rules still apply there.
+    { "action": "external_directory", "resource": "/tmp/*", "effect": "allow" },
 
     // Reads are allowed, except for secret-bearing files.
     { "action": "read", "resource": "*", "effect": "allow" },

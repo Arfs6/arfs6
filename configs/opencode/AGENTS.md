@@ -334,10 +334,11 @@ compensating control for edits. Explain it rather than working around it.
 -   Subagents run without prompting. Each subagent's own permission rules
     still constrain what it can do.
 -   Anything outside the active project asks first, except the
-    configuration's own directory `~/.config/opencode/`, which stays
-    allowed so the learning ledger does not prompt on every session. If a
-    task needs any other outside path, explain why and ask before reading
-    or changing it.
+    configuration's own directory `~/.config/opencode/` and scratch space
+    under `/tmp`, which stay allowed so routine work such as reading the
+    learning ledger or writing scratch files does not prompt. If a task
+    needs any other outside path, explain why and ask before reading or
+    changing it.
 -   The effectful-command list is a guardrail, not a security boundary.
     An unlisted effectful command can run without a prompt, so review
     commands and diffs rather than assuming the rules catch everything.

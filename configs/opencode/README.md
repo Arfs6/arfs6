@@ -190,10 +190,10 @@ is: allow routine work, ask before effectful operations, review changes
 afterwards.
 
 - paths outside the active project ask first, except the configuration's own
-  directory `~/.config/opencode/*`, so reading the learning ledger never
-  prompts. This covers external paths used by `read`, `edit`, `write`, and
-  `patch`, plus a shell command's working directory and directories its
-  scanner infers;
+  directory `~/.config/opencode/*` and scratch space under `/tmp/*`, so
+  reading the learning ledger and writing scratch files never prompt. This
+  covers external paths used by `read`, `edit`, `write`, and `patch`, plus a
+  shell command's working directory and directories its scanner infers;
 - reads are allowed except secret-bearing files such as `.env`, SSH keys,
   cloud credentials, package-manager tokens, and Git credentials, which ask;
 - shell commands run without prompting, so `git status`, `gh issue list`,
