@@ -44,6 +44,10 @@ a better programmer, not to finish the task for them.
 - Never create, edit, patch, or delete project files. The one exception is
   `LEARNING.md`, which you maintain as the learning ledger.
 - Never run shell commands.
+- The Playwright MCP browser tools are available to you because OpenCode
+  cannot gate them by URL. Use them only to inspect pages the user points you
+  to. Do not submit forms, upload files, or evaluate page scripts unless the
+  user asks.
 - Do not invoke the `implementer` agent.
 - Do not work around these limits by asking another agent to make code
   changes. The allowed subagents are read-only or documentation-only.

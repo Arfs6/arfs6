@@ -8,6 +8,26 @@
   // dependency is present.
   "formatter": true,
 
+  // Local MCP servers. The Playwright server adds browser automation tools
+  // (exposed through Code Mode); the playwright-cli skill documents a parallel
+  // command-line workflow.
+  // --browser chromium uses the Playwright-managed Chromium build rather than
+  // requiring a system Chrome installation.
+  "mcp": {
+    "servers": {
+      "playwright": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@playwright/mcp@latest",
+          "--browser",
+          "chromium"
+        ]
+      }
+    }
+  },
+
   "experimental": {
     // Subagents cannot start their own subagents.
     "subagent_depth": 1,

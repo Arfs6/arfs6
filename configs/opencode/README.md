@@ -11,15 +11,17 @@ The `plan` agent can run as either a primary agent or a subagent.
 ## Files
 
 - `opencode.jsonc`: global server/runtime configuration: default agent, model,
-  formatter, experimental settings, ordered permissions, and hard policies.
+  formatter, MCP servers, experimental settings, ordered permissions, and hard
+  policies.
 - `cli.json`: terminal settings: keybindings, permission prompts, and attention
   notifications and sounds.
 - `agents/`: two primary agents, three subagent-only agents, and the `plan`
   agent, which can run as either.
 - `commands/`: reusable `/learn`, `/implement`, `/plan`, `/debug`, `/review`,
   `/docs`, and `/ledger` commands.
-- `skills/`: concise references for Git, Python, Go, Lua, JavaScript, Zig, HTML,
-  and CSS.
+- `skills/`: concise hand-written references for Git, Python, Go, Lua,
+  JavaScript, Zig, HTML, CSS, and Marp, plus the vendored `playwright-cli`
+  skill for browser automation.
 - `AGENTS.md`: the main teaching, accessibility, review, debugging, permission,
   and completion-report rules.
 - `LEARNING.md`: my learning ledger. It records demonstrated understanding, not
@@ -171,7 +173,8 @@ noisy for the current task.
 
 ## Skills
 
-Skills are loaded on demand by the `skill` tool. They are intentionally short:
+Skills are loaded on demand by the `skill` tool. The hand-written skills are
+intentionally short:
 
 - `git`: safe workflow and commit message format.
 - `python`: environments, types, tests, and common verification.
@@ -181,6 +184,30 @@ Skills are loaded on demand by the `skill` tool. They are intentionally short:
 - `zig`: builds, allocators, error unions, and memory ownership.
 - `html`: semantic structure, forms, media, and screen-reader navigation.
 - `css`: accessibility, responsive layout, focus, contrast, and motion.
+- `marp`: Markdown presentation syntax, previewing, and compilation.
+- `playwright-cli`: browser automation, snapshots, and Playwright test
+  workflows. Vendored from `@playwright/cli`; see below.
+
+### Vendored skills
+
+`playwright-cli` is copied unchanged from `@playwright/cli` (0.1.24 at the time
+of writing), including its `references/` files. The upstream package is
+Microsoft's Apache-2.0 licensed `@playwright/cli`. The frontmatter is retained
+as-is: `allowed-tools` is a Claude Code field that OpenCode ignores.
+
+To check for drift after upgrading the globally installed package, run this
+from the repository root (it assumes `npm install -g @playwright/cli`):
+
+```bash
+diff -r "$(npm root -g)/@playwright/cli/skills/playwright-cli" \
+  configs/opencode/skills/playwright-cli
+```
+
+Copy over any changes you want to keep, and keep the directory named
+`playwright-cli`: OpenCode derives the skill ID from the path, not from the
+frontmatter `name`. `playwright-cli install --skills=agents --global` writes a
+fresh copy under `~/.agents/skills`, which OpenCode also discovers, but the
+`~/.config/opencode/skills` copy takes precedence; keeping one copy is simpler.
 
 ## Permissions
 
@@ -210,7 +237,13 @@ afterwards.
   shell (`bash -c`, `sh -c`, `eval`, `xargs`);
 - edits run without prompting, except secret-bearing files; the mandatory
   change review below is the control that catches mistakes;
-- subagents run without prompting; each keeps its own restrictions.
+- subagents run without prompting; each keeps its own restrictions;
+- MCP tools are not covered by the rules above unless a `<server>_<tool>`
+  action names them, and their resource is always `*`. The Playwright tools
+  (`playwright_*`) are therefore allowed for every agent, including `mentor`,
+  and OpenCode cannot restrict them to non-localhost URLs. Browser automation
+  is deliberately left unprompted; treat it as effectful. `mentor.md` limits
+  its use by instruction rather than by permission.
 
 Agent rules append after the global rules:
 
@@ -329,4 +362,12 @@ opencode run --help
   `--standalone` to validate the files without restarting it.
 - Formatters run only when the built-in formatter's executable or project
   dependency is available.
+- The Playwright MCP server runs `@playwright/mcp@latest` through `npx`, so it
+  needs network access on first start and can change version between sessions.
+  Pin the version in `opencode.jsonc` if reproducibility matters more than
+  tracking upstream.
+- The Playwright MCP server and `playwright-cli` use Playwright's managed
+  Chromium build. If a launch reports it missing, install the Chromium build
+  that matches the server's Playwright version; `npx playwright install
+  chromium` installs the build for whatever Playwright version `npx` resolves.
 - No custom plugin is used.
