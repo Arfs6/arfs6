@@ -61,6 +61,9 @@ according to `AGENTS.md`.
 | OpenCode v2 agent design | learning | Chose the merged plan agent, rejected duplicate coding and fixer subagents, and set the mentor's ledger-only edit exception | 2026-11-09 | Explain why a second coding subagent would create a mentor bypass |
 | OpenCode v2 permission ordering | new | Encountered last-match-wins and policy precedence during the migration | 2026-11-09 | Predict the winner when a broad allow is followed by a narrow ask |
 | OpenCode v2 file layout | learning | Reviewed the migration from `tui.jsonc` to `cli.json` and the v2 agent and command fields | 2026-11-09 | Write one agent file from memory and explain each field |
+| Go ServeMux method patterns and 405/`Allow` | new | Encountered via the PR #437 review of a method-less `/` fallback | 2026-11-14 | Predict what a known path with the wrong method returns with and without the fallback |
+| `http.ResponseWriter` status recorder | new | Encountered in the PR #437 review thread | 2026-11-14 | Explain why a recorder must not forward `WriteHeader` |
+| HTTP middleware ordering (CORS, flush, fallback) | new | Encountered while planning PR #437 | 2026-11-14 | Order a three-layer handler stack and justify each position |
 
 ## Session log
 
@@ -77,6 +80,8 @@ according to `AGENTS.md`.
   verified a 3-partition topic, key-to-partition hashing, and
   consumer-group assignment with kcat. Awaiting the user's own
   explanation of the observed behaviour.
+- 2026-11-14: Brought a read-only plan for PR #437 review comments. Three
+  new Go HTTP topics identified; no implementation or prediction yet.
 - 2026-11-09: Chose the v2 configuration design: merged the planning
   agents, rejected duplicate coding and fixer subagents, made the mentor
   the ledger owner with a `LEARNING.md`-only edit exception, and set the
