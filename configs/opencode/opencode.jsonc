@@ -2,59 +2,28 @@
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "mentor",
   "model": "opencode/big-pickle",
-
-  // Format files after the agent edits them, using available built-in
-  // formatters. A formatter only runs when its executable or project
-  // dependency is present.
   "formatter": true,
 
-  // Local MCP servers. The Playwright server adds browser automation tools
-  // (exposed through Code Mode); the playwright-cli skill documents a parallel
-  // command-line workflow.
-  // --browser chromium uses the Playwright-managed Chromium build rather than
-  // requiring a system Chrome installation.
   "mcp": {
     "servers": {
       "playwright": {
         "type": "local",
-        "command": [
-          "npx",
-          "-y",
-          "@playwright/mcp@latest",
-          "--browser",
-          "chromium"
-        ]
+        "command": ["npx", "-y", "@playwright/mcp@latest", "--browser", "chromium"]
       }
     }
   },
 
-  "experimental": {
-    // Subagents cannot start their own subagents.
-    "subagent_depth": 1,
-    // Give agents a todo tool for multi-step work and plan tracking.
-    "todo": true
-  },
+  "experimental": { "subagent_depth": 1, "todo": true },
+  "watcher": { "ignore": ["node_modules/**", "dist/**", "coverage/**", ".git/**"] },
 
-  "watcher": {
-    "ignore": ["node_modules/**", "dist/**", "coverage/**", ".git/**"]
-  },
-
-  // Ordered rules. The last matching rule wins, so broad defaults come
-  // first and specific exceptions later. The posture is: allow routine
-  // work without prompts, ask before effectful operations, and rely on
-  // the mandatory change review (AGENTS.md section 7) as the control for
-  // edits.
+  // Ordered: the last matching rule wins. Broad defaults come first.
   "permissions": [
-    // Anything outside the active project asks first.
     { "action": "external_directory", "resource": "*", "effect": "ask" },
-    // The agent's own configuration and learning ledger are a deliberate
-    // exception, so reading the ledger does not prompt on every session.
     { "action": "external_directory", "resource": "~/.config/opencode/*", "effect": "allow" },
-    // Scratch space under /tmp skips the outside-project prompt; the
-    // secret-file and effectful-command rules still apply there.
+    { "action": "external_directory", "resource": "~/.opencode/plans/**", "effect": "allow" },
+    { "action": "external_directory", "resource": "~/.local/share/opencode/plans/**", "effect": "allow" },
     { "action": "external_directory", "resource": "/tmp/*", "effect": "allow" },
 
-    // Reads are allowed, except for secret-bearing files.
     { "action": "read", "resource": "*", "effect": "allow" },
     { "action": "read", "resource": "*.env", "effect": "ask" },
     { "action": "read", "resource": "*.env.*", "effect": "ask" },
@@ -72,12 +41,7 @@
     { "action": "read", "resource": "**/.pypirc", "effect": "ask" },
     { "action": "read", "resource": "**/.git-credentials", "effect": "ask" },
 
-    // Shell commands run without prompting, so read-only inspection such
-    // as `git status` or `gh issue list` is frictionless. Effectful
-    // commands below still ask; the last matching rule wins.
     { "action": "shell", "resource": "*", "effect": "allow" },
-
-    // Filesystem mutations.
     { "action": "shell", "resource": "rm *", "effect": "ask" },
     { "action": "shell", "resource": "rmdir *", "effect": "ask" },
     { "action": "shell", "resource": "mv *", "effect": "ask" },
@@ -88,8 +52,6 @@
     { "action": "shell", "resource": "chown -R *", "effect": "ask" },
     { "action": "shell", "resource": "chgrp -R *", "effect": "ask" },
 
-    // Remote and history-changing Git operations. Local commits and
-    // inspection stay allowed.
     { "action": "shell", "resource": "git push *", "effect": "ask" },
     { "action": "shell", "resource": "git reset --hard*", "effect": "ask" },
     { "action": "shell", "resource": "git clean *", "effect": "ask" },
@@ -105,8 +67,6 @@
     { "action": "shell", "resource": "git stash drop*", "effect": "ask" },
     { "action": "shell", "resource": "git stash clear*", "effect": "ask" },
 
-    // GitHub CLI mutations. Read-only gh commands such as `gh issue list`,
-    // `gh pr view`, or `gh run list` stay allowed.
     { "action": "shell", "resource": "gh pr create *", "effect": "ask" },
     { "action": "shell", "resource": "gh pr merge *", "effect": "ask" },
     { "action": "shell", "resource": "gh pr close *", "effect": "ask" },
@@ -148,15 +108,13 @@
     { "action": "shell", "resource": "gh workflow disable *", "effect": "ask" },
     { "action": "shell", "resource": "gh run rerun *", "effect": "ask" },
     { "action": "shell", "resource": "gh run cancel *", "effect": "ask" },
-    // `gh api` can send any HTTP method, so it cannot be classified as
-    // read-only by prefix, and `gh auth token` prints the stored token.
+    // `gh api` can use any HTTP method; `gh auth token` prints the token.
     { "action": "shell", "resource": "gh api *", "effect": "ask" },
     { "action": "shell", "resource": "gh auth token*", "effect": "ask" },
     { "action": "shell", "resource": "gh auth login *", "effect": "ask" },
     { "action": "shell", "resource": "gh auth logout *", "effect": "ask" },
     { "action": "shell", "resource": "gh auth switch *", "effect": "ask" },
 
-    // Docker mutations that destroy container or volume state.
     { "action": "shell", "resource": "docker rm *", "effect": "ask" },
     { "action": "shell", "resource": "docker rmi *", "effect": "ask" },
     { "action": "shell", "resource": "docker kill *", "effect": "ask" },
@@ -171,7 +129,6 @@
     { "action": "shell", "resource": "docker compose kill *", "effect": "ask" },
     { "action": "shell", "resource": "docker compose rm *", "effect": "ask" },
 
-    // Publish and remote-execution commands.
     { "action": "shell", "resource": "npm publish*", "effect": "ask" },
     { "action": "shell", "resource": "cargo publish *", "effect": "ask" },
     { "action": "shell", "resource": "twine upload *", "effect": "ask" },
@@ -179,7 +136,6 @@
     { "action": "shell", "resource": "scp *", "effect": "ask" },
     { "action": "shell", "resource": "rsync *", "effect": "ask" },
 
-    // Process and system control.
     { "action": "shell", "resource": "kill *", "effect": "ask" },
     { "action": "shell", "resource": "pkill *", "effect": "ask" },
     { "action": "shell", "resource": "killall *", "effect": "ask" },
@@ -187,7 +143,6 @@
     { "action": "shell", "resource": "mount *", "effect": "ask" },
     { "action": "shell", "resource": "umount *", "effect": "ask" },
 
-    // Package managers.
     { "action": "shell", "resource": "apt *", "effect": "ask" },
     { "action": "shell", "resource": "apt-get *", "effect": "ask" },
     { "action": "shell", "resource": "dnf *", "effect": "ask" },
@@ -195,8 +150,6 @@
     { "action": "shell", "resource": "pacman *", "effect": "ask" },
     { "action": "shell", "resource": "brew *", "effect": "ask" },
 
-    // Nested or dynamically built shell commands bypass prefix matching,
-    // so they ask.
     { "action": "shell", "resource": "bash -c*", "effect": "ask" },
     { "action": "shell", "resource": "bash -lc*", "effect": "ask" },
     { "action": "shell", "resource": "sh -c*", "effect": "ask" },
@@ -206,9 +159,6 @@
     { "action": "shell", "resource": "eval *", "effect": "ask" },
     { "action": "shell", "resource": "xargs *", "effect": "ask" },
 
-    // Edits run without prompting; the mandatory change review in
-    // AGENTS.md section 7 is the control. Secret-bearing files still
-    // ask, mirroring the read rules above.
     { "action": "edit", "resource": "*", "effect": "allow" },
     { "action": "edit", "resource": "*.env", "effect": "ask" },
     { "action": "edit", "resource": "*.env.*", "effect": "ask" },
@@ -226,19 +176,13 @@
     { "action": "edit", "resource": "**/.pypirc", "effect": "ask" },
     { "action": "edit", "resource": "**/.git-credentials", "effect": "ask" },
 
-    // Subagents run without prompting; each one's own permission rules
-    // still constrain it, and `mentor` keeps its read-only allowlist.
     { "action": "subagent", "resource": "*", "effect": "allow" },
-
-    // These are safe and local to the configured skills and web tools.
     { "action": "skill", "resource": "*", "effect": "allow" },
     { "action": "webfetch", "resource": "*", "effect": "allow" },
     { "action": "websearch", "resource": "*", "effect": "allow" },
     { "action": "question", "resource": "*", "effect": "allow" }
   ],
 
-  // Policies are hard denials. They run after permission rules and saved
-  // approvals, so an agent cannot override them with a broad shell allow.
   "policies": [
     { "action": "tool.use", "resource": "shell:sudo *", "effect": "deny" },
     { "action": "tool.use", "resource": "shell:mkfs*", "effect": "deny" },

@@ -38,6 +38,30 @@ Recommended types:
 Use a file name, component, or area for `area`. Keep the summary under 72
 characters. Write the summary in the imperative mood.
 
+## Branch creation workflow
+
+Whenever new work starts on a branch:
+
+1. Fetch the remote first: `git fetch --all --prune`. Fetching refreshes
+   remote-tracking refs such as `origin/main`; it does not update a checked-out
+   local `main` branch.
+2. Identify the intended base branch and verify whether it is `main`, another
+   repository branch, or a remote-tracking branch such as `origin/main`.
+3. Ensure the local base is current without discarding local work. Prefer
+   `git pull --ff-only` on the base branch when it is safe and the repository
+   tracks the intended remote. If `git pull` would merge unexpectedly, rebase,
+   or require recovery, stop and explain the alternatives.
+4. Create the branch explicitly from the updated base, for example
+   `git switch -c <branch-name> origin/main` only after confirming
+   `origin/main` is the intended base.
+5. If the worktree is dirty, the local base is diverged, HEAD is detached, or
+   the remote/base is missing, do not guess. Inspect and ask before using
+   commands that could overwrite work or rewrite history.
+
+This applies to every agent. Do not create a branch from stale local `HEAD`.
+Fetch first, then verify or update the intended local base branch, or create the
+branch explicitly from the freshly fetched remote-tracking ref.
+
 ## Inspection workflow
 
 1. Run `git status --short --branch`.

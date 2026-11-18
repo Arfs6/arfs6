@@ -8,7 +8,7 @@ Diagnose this problem:
 
 $ARGUMENTS
 
-Restate the observed and expected behaviour, identify the smallest useful
-experiment, inspect the relevant code and output, and report evidence,
-diagnosis, proposed fix, verification, and remaining uncertainty. Do not edit
-files.
+Restate observed and expected behavior. Use the smallest useful experiment,
+including `strace` for syscall-level evidence when appropriate. Report
+evidence, diagnosis, proposed fix, verification, and remaining uncertainty. Do
+not edit files.

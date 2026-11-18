@@ -27,6 +27,26 @@ go vet ./...
 
 Run `go build ./...` when the change affects compilation or packages.
 
+## Live debugger workflow
+
+Use a debugger-backed MCP tool only after the Go debug adapter is available and
+verified. For Go, the normal adapter is Delve (`dlv dap`). A typical proof must
+cover:
+
+1. Launch or attach to a small Go target.
+2. Set a breakpoint at a known source line.
+3. Continue until that breakpoint.
+4. Step over, into, and out of a function.
+5. Inspect local variables and stack state.
+6. Stop the debugger and verify cleanup.
+
+Prefer `go build -gcflags="all=-N -l" -o <binary> <target>` or package-specific
+commands when optimization or inlining would hide the source behavior. Do not
+claim a live debug check succeeded until the debugger reports the stopped
+location and observed state. If the MCP server, Delve, or DAP adapter is
+missing, remain in diagnosis mode: use tests, logs, stack traces, and focused
+commands rather than silently changing or installing dependencies.
+
 ## Code guidance
 
 - Return errors; wrap them with context when the caller needs it.

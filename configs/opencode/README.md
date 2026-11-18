@@ -1,329 +1,156 @@
 # OpenCode configuration
 
-This directory contains my OpenCode 2 configuration. It is shared between WSL
-and native Ubuntu through the `arfs6` dotfiles repository.
+This directory contains my OpenCode 2 configuration, shared between WSL and
+native Ubuntu through the `arfs6` dotfiles repository. The setup is
+learning-first: `mentor` is the global default; this repository defaults to
+`build`.
 
-The configuration is designed for learning first: `mentor` is the default
-agent, `implementer` is available when I explicitly want code written, and
-read-only subagents handle planning, debugging, review, and technical writing.
-The `plan` agent can run as either a primary agent or a subagent.
+## Layout
 
-## Files
+- `opencode.jsonc`: model, formatter, MCP servers, experimental settings,
+  ordered permissions, and hard policies.
+- `cli.json`: leader key, command palette, permission prompt, and attention
+  settings.
+- `agents/`: `mentor`, `build`, `plan`, `debugger`, `reviewer`, and
+  `tech-writer`.
+- `commands/`: `/learn`, `/build`, `/implement`, `/plan`, `/debug`, `/review`,
+  `/docs`, and `/ledger`.
+- `skills/`: short hand-written references and the vendored `playwright-cli`
+  skill.
+- `AGENTS.md`: global teaching, accessibility, review, debugging, permission,
+  and completion rules.
+- `LEARNING.md`: learning ledger. It records demonstrated understanding.
 
-- `opencode.jsonc`: global server/runtime configuration: default agent, model,
-  formatter, MCP servers, experimental settings, ordered permissions, and hard
-  policies.
-- `cli.json`: terminal settings: keybindings, permission prompts, and attention
-  notifications and sounds.
-- `agents/`: two primary agents, three subagent-only agents, and the `plan`
-  agent, which can run as either.
-- `commands/`: reusable `/learn`, `/implement`, `/plan`, `/debug`, `/review`,
-  `/docs`, and `/ledger` commands.
-- `skills/`: concise hand-written references for Git, Python, Go, Lua,
-  JavaScript, Zig, HTML, CSS, and Marp, plus the vendored `playwright-cli`
-  skill for browser automation.
-- `AGENTS.md`: the main teaching, accessibility, review, debugging, permission,
-  and completion-report rules.
-- `LEARNING.md`: my learning ledger. It records demonstrated understanding, not
-  things an agent once explained.
-- `README.md`: this document.
+Plans are stored centrally under `~/.opencode/plans/<project_name>/<title>.md`.
+The `plan` agent writes there and moves a completed plan to
+`~/.local/share/opencode/plans/<project_name>/<title>.md` once every step is
+executed. The repository does not keep plan files.
 
-## Modes and agents
+## Agents and commands
 
 ### Primary agents
 
-- `mentor`: the default. It teaches, asks questions, reviews my attempts, and
-  gives hints. It may edit only `LEARNING.md`; it cannot edit project files, run
-  shell commands, or invoke `implementer`.
-- `implementer`: implementation mode. It writes code, explains the design, runs
-  verification, reviews every material change-set with the `reviewer`
-  subagent, and leaves a follow-up exercise. Unless I explicitly ask it to
-  proceed without discussion, it states the plan and waits for approval before
-  changing files.
+- `mentor`: teaches with hints and questions. It may edit only `LEARNING.md`;
+  no other edits, shell commands, or `build` calls.
+- `build`: implements changes. It explains the plan and risk before editing,
+  reviews material changes with `reviewer`, runs checks, and reports results.
 
 ### Subagents
 
-- `plan`: read-only planning and task breakdown. It can also run as a primary
-  agent.
-- `debugger`: evidence-based diagnosis without editing files. It stays inside
-  the current project.
-- `reviewer`: read-only code review with severity labels. It reports findings
-  and does not fix them.
-- `tech-writer`: documentation-only edits. It never edits the learning ledger
-  or agent, command, and skill definitions.
+- `plan`: read-only planning; can also be a primary agent.
+- `debugger`: evidence-based diagnosis without editing.
+- `reviewer`: read-only review with severity labels and verification evidence.
+- `tech-writer`: documentation-only edits; never `LEARNING.md`, agent, command,
+  or skill definitions.
 
-Primary agents know these subagents and may invoke them deliberately. The
-`plan` agent is read-only in both roles.
+Press `<leader>a` (`ctrl+x`, then `a`) for the agent list, or `tab` to cycle.
+Commands: `/learn`, `/build`, `/implement` (alias of `/build`), `/plan`,
+`/debug`, `/review`, `/docs`, and `/ledger`.
 
-### Switching modes
-
-In the TUI, press `<leader>a` (`ctrl+x`, then `a`) to open the agent list. The
-leader key is `ctrl+x`.
-
-You can also use:
-
-- `/learn` to start a learning-mode session.
-- `/implement` to start an implementation-mode session.
-- `/plan`, `/debug`, `/review`, and `/docs` to invoke the matching subagent.
-- `/ledger` to review the recent conversation and update `LEARNING.md` from
-  demonstrated evidence.
-
-### Per-repository default
-
-A project can set its own default agent with `.opencode/opencode.json`:
+A project can override the default in `.opencode/opencode.json`:
 
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "default_agent": "implementer"
+  "default_agent": "build"
 }
 ```
 
-For example, `upstat` uses implementation mode by default, but I can still
-switch to `mentor` when I want to learn.
+## Model, UI, and notifications
 
-## Model
+The default model is `opencode/big-pickle`. Use `/models` or `opencode run
+--model` for one session.
 
-The default model is `opencode/big-pickle`, a free OpenCode model. To use a
-different model for one session, use `/models` or `opencode run --model`.
-
-## Web UI on OpenCode 2
-
-OpenCode 2 no longer provides the old `opencode web` subcommand. The working
-workflow is the background service plus a one-time browser link:
+OpenCode 2 uses the background service and a one-time browser link:
 
 ```bash
 opencode service status
 opencode pair
 ```
 
-Open the printed URL in the browser. The link is one-time; run `opencode pair`
-again if it expires or the browser is unavailable.
+Open the printed URL. Run `opencode pair` again if it expires. Manage the
+service with `opencode service start|status|stop|restart`. Do not run
+`opencode serve` while the service uses the same database; use `opencode pair`.
 
-The background service is normally started automatically. Manage it with:
+Web notification categories are browser-profile settings: permission requests
+and questions are enabled by default; errors and completion are not. The tab
+must be open and unfocused. `127.0.0.1` is a secure context.
 
-```bash
-opencode service start
-opencode service status
-opencode service stop
-opencode service restart
-```
+`cli.json` enables TUI attention notifications and sounds at volume `0.4` with
+`opencode.default`. Override individual events under `attention.sounds` if
+needed. Desktop notifications depend on the terminal and tmux; WSL sound uses
+WSLg PulseAudio.
 
-`opencode serve` starts a separate v2 API and web server. Do not run it while
-the background service is already using the same database: the current version
-can fail with `UNIQUE constraint failed: migration.id`. Use `opencode pair`
-for the normal web workflow, and back up the database before any attempt to
-repair migrations.
-
-## Notifications
-
-### Web notifications
-
-The web UI has built-in notifications for:
-
-- permission requests, enabled by default;
-- questions, enabled by default;
-- errors, disabled by default;
-- agent completion, disabled by default.
-
-The web UI only notifies when the session tab is open and the browser window is
-not focused. Allow notifications when the browser asks. If notifications do
-not appear:
-
-1. Confirm the session tab is still open.
-2. Confirm the browser site permission is allowed.
-3. Confirm the notification settings in the OpenCode web settings.
-4. Confirm the browser is not focused on the session tab.
-
-`opencode pair` uses `http://127.0.0.1`, which browsers treat as a secure
-context for notification permissions.
-
-### TUI attention
-
-`cli.json` enables `attention.notifications` and `attention.sound` with a
-volume of `0.4` and the `opencode.default` sound pack. The TUI requests
-attention for questions, permissions, session errors, completed sessions, and
-finished subagents. Built-in sounds are used for each event. To override one
-event, add a path under `attention.sounds` for `default`, `question`,
-`permission`, `error`, `done`, or `subagent_done`; an unreadable file falls back
-to the built-in sound.
-
-TUI desktop notifications depend on the terminal and on tmux configuration.
-Sound on WSL uses WSLg PulseAudio. If sound fails, check `paplay` and the WSLg
-PulseAudio socket.
-
-## TUI navigation
-
-The important default keybindings are:
-
-- `ctrl+p`: command palette.
-- `<leader>a`: agent list.
-- `tab`: cycle agents.
-- `<leader>m`: model list.
-- `<leader>n`: new session.
-- `<leader>l`: session list.
-- `<leader>c`: compact session.
-- `<leader>e`: open editor.
-- `escape`: interrupt the current response.
-- `ctrl+g` or `home`: jump to the first message.
-- `ctrl+alt+g` or `end`: jump to the last message.
-
-`opencode mini` starts the minimal interactive interface if the full TUI is too
-noisy for the current task.
+Keybindings: `ctrl+p` palette, `<leader>a` agents, `tab` cycle agents,
+`<leader>m` models, `<leader>n` new session, `<leader>l` sessions, `<leader>c`
+compact, `<leader>e` editor, `escape` interrupt, `ctrl+g`/`home` first message,
+`ctrl+alt+g`/`end` last message. `opencode mini` starts a minimal TUI.
 
 ## Skills
 
-Skills are loaded on demand by the `skill` tool. The hand-written skills are
-intentionally short:
+Hand-written skills cover Git, Python, Go, Lua, JavaScript, Zig, HTML, CSS,
+Marp, and Playwright CLI. They are loaded on demand by the `skill` tool.
 
-- `git`: safe workflow and commit message format.
-- `python`: environments, types, tests, and common verification.
-- `go`: modules, errors, context, concurrency, and tests.
-- `lua`: scope, tables, modules, and tests.
-- `javascript`: package managers, modules, async code, and tests.
-- `zig`: builds, allocators, error unions, and memory ownership.
-- `html`: semantic structure, forms, media, and screen-reader navigation.
-- `css`: accessibility, responsive layout, focus, contrast, and motion.
-- `marp`: Markdown presentation syntax, previewing, and compilation.
-- `playwright-cli`: browser automation, snapshots, and Playwright test
-  workflows. Vendored from `@playwright/cli`; see below.
-
-### Vendored skills
-
-`playwright-cli` is copied unchanged from `@playwright/cli` (0.1.24 at the time
-of writing), including its `references/` files. The upstream package is
-Microsoft's Apache-2.0 licensed `@playwright/cli`. The frontmatter is retained
-as-is: `allowed-tools` is a Claude Code field that OpenCode ignores.
-
-To check for drift after upgrading the globally installed package, run this
-from the repository root (it assumes `npm install -g @playwright/cli`):
+`playwright-cli` is vendored unchanged from `@playwright/cli` 0.1.24, including
+its `references/` files. Check drift with:
 
 ```bash
 diff -r "$(npm root -g)/@playwright/cli/skills/playwright-cli" \
   configs/opencode/skills/playwright-cli
 ```
 
-Copy over any changes you want to keep, and keep the directory named
-`playwright-cli`: OpenCode derives the skill ID from the path, not from the
-frontmatter `name`. `playwright-cli install --skills=agents --global` writes a
-fresh copy under `~/.agents/skills`, which OpenCode also discovers, but the
-`~/.config/opencode/skills` copy takes precedence; keeping one copy is simpler.
+Keep the directory name; OpenCode derives the skill ID from the path.
 
 ## Permissions
 
 `opencode.jsonc` uses one ordered `permissions` array. The last matching rule
-wins, so broad defaults come first and narrow exceptions follow. The posture
-is: allow routine work, ask before effectful operations, review changes
-afterwards.
+wins: broad defaults first, narrow exceptions later. Routine work is allowed;
+effectful work asks; diffs are reviewed afterward.
 
-- paths outside the active project ask first, except the configuration's own
-  directory `~/.config/opencode/*` and scratch space under `/tmp/*`, so
-  reading the learning ledger and writing scratch files never prompt. This
-  covers external paths used by `read`, `edit`, `write`, and `patch`, plus a
-  shell command's working directory and directories its scanner infers;
-- reads are allowed except secret-bearing files such as `.env`, SSH keys,
-  cloud credentials, package-manager tokens, and Git credentials, which ask;
-- shell commands run without prompting, so `git status`, `gh issue list`,
-  builds, and tests are frictionless. Effectful commands ask: `git push`,
-  `git rm`, `git mv`, history rewrites, and commands that discard uncommitted
-  changes (`git restore`, `git clean`, `git reset --hard`); `rm`, `mv`, `dd`,
-  `truncate`, `shred`, and recursive `chmod`/`chown`; `gh` mutations
-  (`gh pr merge`,
-  `gh issue close`, `gh repo delete`, `gh secret set`, `gh api`); Docker
-  state destruction (`docker rm`, `docker volume rm`, `docker compose
-  down`); publishes (`npm publish`, `cargo publish`, `twine upload`);
-  remote execution (`ssh`, `scp`, `rsync`); process and service control
-  (`kill`, `systemctl`, `mount`); system package managers; and nested
-  shell (`bash -c`, `sh -c`, `eval`, `xargs`);
-- edits run without prompting, except secret-bearing files; the mandatory
-  change review below is the control that catches mistakes;
-- subagents run without prompting; each keeps its own restrictions;
-- MCP tools are not covered by the rules above unless a `<server>_<tool>`
-  action names them, and their resource is always `*`. The Playwright tools
-  (`playwright_*`) are therefore allowed for every agent, including `mentor`,
-  and OpenCode cannot restrict them to non-localhost URLs. Browser automation
-  is deliberately left unprompted; treat it as effectful. `mentor.md` limits
-  its use by instruction rather than by permission.
+- Outside-project paths ask first except `~/.config/opencode/*`, plan storage,
+  and `/tmp/*`.
+- Reads are allowed except secret-bearing files, which ask.
+- Shell commands are allowed until an effectful prefix asks: destructive file
+  operations, Git history rewrites and remote operations, GitHub and Docker
+  mutations, publishes, remote execution, process/service control, package
+  managers, and nested shells.
+- Edits are allowed except secret-bearing files. Subagents run without prompts
+  but keep their own restrictions.
+- MCP tools are not covered by the generic rules unless a `<server>_<tool>`
+  action names them. Playwright tools are therefore allowed for every agent;
+  `mentor` limits its use by instruction.
+- `policies` hard-deny `sudo`, `mkfs`, `shutdown`, and `reboot`.
 
-Agent rules append after the global rules:
+Agent edits are append-only overrides: `mentor` may edit only `LEARNING.md` and
+may invoke `plan`, `debugger`, `reviewer`, and `tech-writer`; `build` may edit
+and invoke subagents; `plan` may write only plan files; `debugger` cannot edit;
+`reviewer` allows only read-only Git commands; `tech-writer` allows Markdown,
+MDX, and text files but not agent, command, skill, or ledger files.
 
-- `mentor`: edits only `LEARNING.md`; no shell commands; may invoke `plan`,
-  `debugger`, `reviewer`, and `tech-writer`.
-- `implementer`: edits and subagents allowed; shell uses the global posture.
-- `plan`: edits denied; shell uses the global posture; read-only by
-  instruction.
-- `debugger`: edits and subagents denied; shell uses the global posture for
-  diagnostics.
-- `reviewer`: read-only, with only a few Git inspection commands allowed.
-- `tech-writer`: documentation files only; it cannot edit the learning ledger or
-  agent, command, and skill definitions.
+Use the v2 `shell` action. Agents call `shell` directly and reserve `execute`
+for Code Mode tools in its catalog.
 
-`policies` hard-deny `sudo`, `mkfs`, `shutdown`, and `reboot`. Policies run
-after permissions and saved approvals, so an agent cannot override them with a
-broad shell allow.
+## Change review and commits
 
-These are guardrails, not a security boundary. Prefix rules cannot recognize
-every dangerous command, and the shell scanner infers directories from
-command text only on a best-effort basis, so an unlisted effectful command,
-or an outside path the scanner does not recognize, can run without a prompt.
-Review diffs and commands, and remember a saved approval is project-scoped and
-is not permission for unrelated commands.
+Every material change-set is reviewed before completion. The editing agent
+invokes `reviewer` on the working-tree diff and addresses or reports findings.
+`tech-writer` cannot spawn subagents, so its caller reviews its diffs. Trivial
+changes get a documented self-review. `/review` requests a manual review.
 
-OpenCode 2 names the direct shell tool `shell`. The configuration uses the v2
-`shell` action, not the legacy `bash` key. Agents are told to call `shell`
-directly and to use `execute` only for the Code Mode tools listed in its
-catalog.
+Commit messages use `type(area): brief summary`, followed by why the change was
+made. `./sync.sh --message "..."` overrides the generated message.
 
-## Change review
+## Installation and verification
 
-Every material change-set is reviewed before the work is reported complete.
-The editing agent invokes the `reviewer` subagent on the working-tree diff and
-addresses or reports its findings. `tech-writer` cannot spawn subagents
-(`subagent_depth: 1`), so the primary agent that invoked it reviews its diffs;
-trivial changes such as typo fixes get a documented self-review of the diff.
-`/review` requests a review manually at any time.
-
-## Commit messages
-
-Use this format for manual commits:
-
-```text
-type(area): brief summary
-
-Explain what changed and why.
-```
-
-For example:
-
-```text
-feat(opencode): add mentor and implementer modes
-```
-
-The automatic dotfiles sync uses the same format when it asks OpenCode for a
-commit message. `./sync.sh --message "..."` overrides the generated message.
-
-## Installation and updates
-
-These files are linked into `~/.config/opencode` by the repository-level
-`setup.sh`. After editing them, run:
+`setup.sh` links these files into `~/.config/opencode`. After editing:
 
 ```bash
 ./setup.sh --no-timer
-```
-
-Then review and sync:
-
-```bash
 ./sync.sh --dry-run
 ./sync.sh
 ```
 
-`setup.sh` backs up replaced files under
-`~/.local/state/arfs6/backups/<timestamp>/`.
-
-## Verification and troubleshooting
-
-Useful commands:
+Useful checks:
 
 ```bash
 opencode --version
@@ -334,40 +161,16 @@ opencode service status
 opencode pair
 ```
 
-`opencode debug config --standalone` shows the merged configuration for the
-current directory without connecting to the background service.
-`opencode debug agents --standalone` shows the discovered primary and subagent
-definitions. The running service keeps the configuration it loaded at startup,
-so without `--standalone` these commands can show stale settings. Restart the
-service to apply changes to the active TUI.
-
-The v2 documentation still mentions `opencode web` in places, but the installed
-v2.2.6 binary exposes `opencode serve` and `opencode pair` instead. Trust the
-binary help for the installed version:
-
-```bash
-opencode --help
-opencode run --help
-```
+`--standalone` reads the files without contacting the background service. The
+running service must be restarted to use changed configuration.
 
 ## Limitations
 
-- Web notification categories are browser-profile settings. Permission requests
-  and questions are enabled by default; errors and agent completion must be
-  enabled manually in the web settings.
-- Web notifications require an open session tab and browser permission.
+- Web notifications require an open tab, browser permission, and manual
+  enabling for some categories.
 - The `opencode serve` migration race is unresolved; use `opencode pair`.
-- TUI desktop notifications may depend on tmux and the terminal emulator.
-- The running service must be restarted to apply configuration changes. Use
-  `--standalone` to validate the files without restarting it.
-- Formatters run only when the built-in formatter's executable or project
-  dependency is available.
-- The Playwright MCP server runs `@playwright/mcp@latest` through `npx`, so it
-  needs network access on first start and can change version between sessions.
-  Pin the version in `opencode.jsonc` if reproducibility matters more than
-  tracking upstream.
-- The Playwright MCP server and `playwright-cli` use Playwright's managed
-  Chromium build. If a launch reports it missing, install the Chromium build
-  that matches the server's Playwright version; `npx playwright install
-  chromium` installs the build for whatever Playwright version `npx` resolves.
+- Desktop notifications depend on the terminal and tmux.
+- Formatters run only when their executable or project dependency exists.
+- Playwright MCP uses `@playwright/mcp@latest` through `npx`, so it needs
+  network access on first start and can change versions.
 - No custom plugin is used.
