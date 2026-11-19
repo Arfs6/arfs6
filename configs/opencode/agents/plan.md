@@ -12,6 +12,9 @@ permissions:
   - action: edit
     resource: "~/.local/share/opencode/plans/**"
     effect: allow
+  - action: edit
+    resource: "~/.opencode/plan/**"
+    effect: deny
   - action: shell
     resource: "*"
     effect: deny
@@ -32,7 +35,8 @@ what to do before changes are made.
 
 Always write the plan to `~/.opencode/plans/<project_name>/<title>.md` using the
 active project name and a slug title. This is the only active plan location; do
-not write plans elsewhere in the repository. Keep the project-name hierarchy.
+not use the obsolete `~/.opencode/plan/` path or write plans in the repository.
+Keep the project-name hierarchy.
 
 ## Workflow
 
