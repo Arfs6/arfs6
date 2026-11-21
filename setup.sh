@@ -56,6 +56,15 @@ esac
 require_command git
 require_command rsync
 
+for plan_dir in "$HOME/.opencode/plans" "$HOME/.local/share/opencode/plans"; do
+  if [ "$dry_run" -eq 1 ]; then
+    log "would create: $plan_dir"
+  elif [ ! -d "$plan_dir" ]; then
+    mkdir -p -- "$plan_dir"
+    log "created: $plan_dir"
+  fi
+done
+
 backup_root="${XDG_STATE_HOME:-$HOME/.local/state}/arfs6/backups/$(date '+%Y%m%d-%H%M%S')"
 
 backup_target() {

@@ -22,9 +22,10 @@ learning-first: `mentor` is the global default; this repository defaults to
 - `LEARNING.md`: learning ledger. It records demonstrated understanding.
 
 Plans are stored centrally under `~/.opencode/plans/<project_name>/<title>.md`.
-The `plan` agent writes there and moves a completed plan to
-`~/.local/share/opencode/plans/<project_name>/<title>.md` once every step is
-executed. The repository does not keep plan files.
+The `plan` agent creates and edits files there and in
+`~/.local/share/opencode/plans/<project_name>/<title>.md`, and may move files
+between those directories. It moves a completed plan to the archive only after
+every step is executed. The repository does not keep plan files.
 
 ## Agents and commands
 
@@ -37,7 +38,8 @@ executed. The repository does not keep plan files.
 
 ### Subagents
 
-- `plan`: read-only planning; can also be a primary agent.
+- `plan`: read-only on project files; writes plans only under the two plan
+  trees; can also be a primary agent.
 - `debugger`: evidence-based diagnosis without editing.
 - `reviewer`: read-only review with severity labels and verification evidence.
 - `tech-writer`: documentation-only edits; never `LEARNING.md`, agent, command,
@@ -123,9 +125,10 @@ effectful work asks; diffs are reviewed afterward.
 
 Agent edits are append-only overrides: `mentor` may edit only `LEARNING.md` and
 may invoke `plan`, `debugger`, `reviewer`, and `tech-writer`; `build` may edit
-and invoke subagents; `plan` may write only plan files; `debugger` cannot edit;
-`reviewer` allows only read-only Git commands; `tech-writer` allows Markdown,
-MDX, and text files but not agent, command, skill, or ledger files.
+and invoke subagents; `plan` may create, edit, and move files only in the two
+plan directories; `debugger` cannot edit; `reviewer` allows only read-only Git
+commands; `tech-writer` allows Markdown, MDX, and text files but not agent,
+command, skill, or ledger files.
 
 Use the v2 `shell` action. Agents call `shell` directly and reserve `execute`
 for Code Mode tools in its catalog.
@@ -142,7 +145,8 @@ made. `./sync.sh --message "..."` overrides the generated message.
 
 ## Installation and verification
 
-`setup.sh` links these files into `~/.config/opencode`. After editing:
+`setup.sh` links these files into `~/.config/opencode` and creates the two
+central plan roots. After editing:
 
 ```bash
 ./setup.sh --no-timer

@@ -3,6 +3,18 @@ description: Planning agent. Read-only on project files; writes plans to central
 mode: all
 steps: 16
 permissions:
+  - action: read
+    resource: "~/.opencode/plans/**"
+    effect: allow
+  - action: read
+    resource: "~/.local/share/opencode/plans/**"
+    effect: allow
+  - action: external_directory
+    resource: "~/.opencode/plans/*"
+    effect: allow
+  - action: external_directory
+    resource: "~/.local/share/opencode/plans/*"
+    effect: allow
   - action: edit
     resource: "*"
     effect: deny
@@ -19,8 +31,26 @@ permissions:
     resource: "*"
     effect: deny
   - action: shell
-    resource: "mv ~/.opencode/plans/** ~/.local/share/opencode/plans/**"
+    resource: "mkdir -p ~/.opencode/plans"
     effect: allow
+  - action: shell
+    resource: "mkdir -p ~/.opencode/plans/*"
+    effect: allow
+  - action: shell
+    resource: "mkdir -p ~/.local/share/opencode/plans"
+    effect: allow
+  - action: shell
+    resource: "mkdir -p ~/.local/share/opencode/plans/*"
+    effect: allow
+  - action: shell
+    resource: "mv ~/.opencode/plans/* ~/.local/share/opencode/plans/*"
+    effect: allow
+  - action: shell
+    resource: "mv ~/.local/share/opencode/plans/* ~/.opencode/plans/*"
+    effect: allow
+  - action: shell
+    resource: "*..*"
+    effect: deny
   - action: subagent
     resource: "*"
     effect: deny
@@ -55,12 +85,15 @@ Keep the project-name hierarchy.
    executed, move the file to
    `~/.local/share/opencode/plans/<project_name>/<title>.md` and record the
    archive path in the plan. Archive only when every step is complete; if work
-   remains, leave the plan at the active path and update it instead.
+   remains, leave the plan at the active path and update it instead. You may
+   move a plan back to the active path when work resumes.
 
 Also restate the goal and the user's priorities, follow those priorities, and
 ask one focused question if a requirement is unclear. Return a plan executable
 without guessing.
 
-Use the plan directories only for plans. Do not edit other files, run
-destructive commands, or invoke subagents. If asked to implement, explain that
-`build` should do it and offer to switch.
+Use `~/.opencode/plans` and `~/.local/share/opencode/plans` only for plans. You
+may create their directories, edit plan files, and move files between them. Do
+not use other paths under `~/.local/share/opencode`, run destructive commands,
+or invoke subagents. If asked to implement, explain that `build` should do it
+and offer to switch.

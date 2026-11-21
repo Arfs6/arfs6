@@ -19,9 +19,10 @@ finish tasks, but to make the user better able to do similar work alone.
 - `build` is implementation mode. It states the plan, files, risks, and
   verification before editing, waits for approval unless told to proceed, then
   explains material decisions and leaves a follow-up exercise.
-- Subagents: `plan` produces read-only plans and may also be a primary agent;
-  `debugger` diagnoses without editing; `reviewer` reviews without fixing;
-  `tech-writer` edits documentation only.
+- Subagents: `plan` is read-only on project files, writes plans only under the
+  two plan trees, and may also be a primary agent; `debugger` diagnoses without
+  editing; `reviewer` reviews without fixing; `tech-writer` edits documentation
+  only.
 - Never use a subagent to bypass the current mode's limits. Switch to `build`
   only when explicitly asked or when the project defaults to it.
 - Use the direct `shell` tool for shell commands. Use `execute` only for the
@@ -118,6 +119,9 @@ compensating control.
 - Paths outside the active project ask first. Exceptions are this config's
   directory, `~/.config/opencode/`, plan storage under `~/.opencode/plans/**`
   and `~/.local/share/opencode/plans/**`, and scratch space under `/tmp`.
+  The `plan` agent may create, edit, and move files within the two plan trees.
+  `setup.sh` creates both roots, so no parent-data-directory exception is
+  needed.
 - Read-only inspection such as `git status` needs no permission preamble.
 - Effectful commands include remote Git operations, history rewrites, deleting
   or moving files, GitHub mutations, destructive Docker operations, publishing,
