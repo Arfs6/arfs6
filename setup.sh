@@ -56,12 +56,12 @@ esac
 require_command git
 require_command rsync
 
-for plan_dir in "$HOME/.opencode/plans" "$HOME/.local/share/opencode/plans"; do
+for record_dir in "$HOME/.opencode/records" "$HOME/.local/share/opencode/records"; do
   if [ "$dry_run" -eq 1 ]; then
-    log "would create: $plan_dir"
-  elif [ ! -d "$plan_dir" ]; then
-    mkdir -p -- "$plan_dir"
-    log "created: $plan_dir"
+    log "would create: $record_dir"
+  elif [ ! -d "$record_dir" ]; then
+    mkdir -p -- "$record_dir"
+    log "created: $record_dir"
   fi
 done
 

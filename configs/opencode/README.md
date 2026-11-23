@@ -13,41 +13,57 @@ learning-first: `mentor` is the global default; this repository defaults to
   settings.
 - `agents/`: `mentor`, `build`, `plan`, `debugger`, `reviewer`, and
   `tech-writer`.
-- `commands/`: `/learn`, `/build`, `/implement`, `/plan`, `/debug`, `/review`,
-  `/docs`, and `/ledger`.
+- `commands/`: `/learn`, `/build`, `/implement`, `/plan`, `/audit`, `/debug`,
+  `/review`, `/docs`, and `/ledger`.
 - `skills/`: short hand-written references and the vendored `playwright-cli`
   skill.
 - `AGENTS.md`: global teaching, accessibility, review, debugging, permission,
   and completion rules.
 - `LEARNING.md`: learning ledger. It records demonstrated understanding.
 
-Plans are stored centrally under `~/.opencode/plans/<project_name>/<title>.md`.
-The `plan` agent creates and edits files there and in
-`~/.local/share/opencode/plans/<project_name>/<title>.md`, and may move files
-between those directories. It moves a completed plan to the archive only after
-every step is executed. The repository does not keep plan files.
+Record files are persistent work records, stored centrally under
+`~/.opencode/records/<project_name>/<title>.md`. Each begins with a searchable
+header containing source, project, description, status, and fixed point. Records
+then capture the issue, scope, solution shape, decisions, execution checkboxes,
+audit findings, and history. Audit records are a shorter variant: header, issue,
+scope, findings, and history. The `plan` agent creates, updates, and archives
+records there and in `~/.local/share/opencode/records/<project_name>/<title>.md`;
+`build` marks executed steps with a date and evidence. `/audit` runs in a fresh
+child session, invokes `reviewer`, and can audit a record found by title,
+source, or description, the whole repository, or a commit. Repository and
+commit audits create a dedicated record under the active record root. Every
+execution checklist has a stop-and-audit step before any commit or permanent
+change. Stale records move to the archive instead of being deleted. The
+repository does not keep work records.
 
 ## Agents and commands
 
 ### Primary agents
 
-- `mentor`: teaches with hints and questions. It may edit only `LEARNING.md`;
-  no other edits, shell commands, or `build` calls.
-- `build`: implements changes. It explains the plan and risk before editing,
-  reviews material changes with `reviewer`, runs checks, and reports results.
+- `mentor`: learning-mode coach that guides you to become a better programmer
+  while you write the code. It may edit only `LEARNING.md`; no other edits,
+  shell commands, or `build` calls.
+- `build`: implementation-mode engineer that does the work itself and explains
+  each decision with the context needed to follow along. It states the plan and
+  risks before editing, reviews material changes with `reviewer`, runs checks,
+  and reports results.
 
 ### Subagents
 
-- `plan`: read-only on project files; writes plans only under the two plan
-  trees; can also be a primary agent.
+- `plan`: read-only on project files; writes and archives persistent work
+  records only under the two record trees; subagent only, callable by both
+  primary agents.
 - `debugger`: evidence-based diagnosis without editing.
 - `reviewer`: read-only review with severity labels and verification evidence.
 - `tech-writer`: documentation-only edits; never `LEARNING.md`, agent, command,
-  or skill definitions.
+  or skill definitions. OpenCode's built-in `explore` and `general` are also
+  available to `build` for fresh-context research legwork.
 
 Press `<leader>a` (`ctrl+x`, then `a`) for the agent list, or `tab` to cycle.
 Commands: `/learn`, `/build`, `/implement` (alias of `/build`), `/plan`,
-`/debug`, `/review`, `/docs`, and `/ledger`.
+`/audit`, `/debug`, `/review`, `/docs`, and `/ledger`. Use `/audit` for a record,
+`/audit repo` for the whole repository, or `/audit <sha>` for one commit. It uses
+a fresh child session and invokes `reviewer`, so `subagent_depth` is `2`.
 
 A project can override the default in `.opencode/opencode.json`:
 
@@ -62,6 +78,13 @@ A project can override the default in `.opencode/opencode.json`:
 
 The default model is `opencode/big-pickle`. Use `/models` or `opencode run
 --model` for one session.
+
+Web search is enabled with `websearch.provider: "random"` and an allow
+permission. Connect one provider before using it: `/connect` in the TUI, or
+`opencode auth login <provider>` with `exa`, `firecrawl`, `parallel`, `tavily`,
+or `tinyfish`. You can also set the matching `EXA_API_KEY`, `FIRECRAWL_API_KEY`,
+`PARALLEL_API_KEY`, `TAVILY_API_KEY`, or `TINYFISH_API_KEY` before starting
+OpenCode. Credentials stay outside this repository.
 
 OpenCode 2 uses the background service and a one-time browser link:
 
@@ -91,7 +114,13 @@ compact, `<leader>e` editor, `escape` interrupt, `ctrl+g`/`home` first message,
 ## Skills
 
 Hand-written skills cover Git, Python, Go, Lua, JavaScript, Zig, HTML, CSS,
-Marp, and Playwright CLI. They are loaded on demand by the `skill` tool.
+Marp, and Playwright CLI. The Git skill also covers PR bodies and read-first
+`gh` usage. Six adapted skills add plain-language re-pitches (`wait-what`),
+two-axis review (`code-review`), help writing agent docs
+(`writing-for-agents`), primary-source research (`research`), red-green test
+discipline (`tdd`), and decision interviews (`grilling`). They are loaded on
+demand by the `skill` tool. The mandatory `reviewer` subagent stays the default
+review authority; `code-review` is an optional deeper pass after it.
 
 `playwright-cli` is vendored unchanged from `@playwright/cli` 0.1.24, including
 its `references/` files. Check drift with:
@@ -109,15 +138,15 @@ Keep the directory name; OpenCode derives the skill ID from the path.
 wins: broad defaults first, narrow exceptions later. Routine work is allowed;
 effectful work asks; diffs are reviewed afterward.
 
-- Outside-project paths ask first except `~/.config/opencode/*`, plan storage,
+- Outside-project paths ask first except `~/.config/opencode/*`, record storage,
   and `/tmp/*`.
 - Reads are allowed except secret-bearing files, which ask.
 - Shell commands are allowed until an effectful prefix asks: destructive file
   operations, Git history rewrites and remote operations, GitHub and Docker
   mutations, publishes, remote execution, process/service control, package
   managers, and nested shells.
-- Edits are allowed except secret-bearing files. Subagents run without prompts
-  but keep their own restrictions.
+- Edits are allowed except secret-bearing files. Subagents use their own
+  permission rules.
 - MCP tools are not covered by the generic rules unless a `<server>_<tool>`
   action names them. Playwright tools are therefore allowed for every agent;
   `mentor` limits its use by instruction.
@@ -126,7 +155,7 @@ effectful work asks; diffs are reviewed afterward.
 Agent edits are append-only overrides: `mentor` may edit only `LEARNING.md` and
 may invoke `plan`, `debugger`, `reviewer`, and `tech-writer`; `build` may edit
 and invoke subagents; `plan` may create, edit, and move files only in the two
-plan directories; `debugger` cannot edit; `reviewer` allows only read-only Git
+record directories; `debugger` cannot edit; `reviewer` allows only read-only Git
 commands; `tech-writer` allows Markdown, MDX, and text files but not agent,
 command, skill, or ledger files.
 
@@ -135,10 +164,12 @@ for Code Mode tools in its catalog.
 
 ## Change review and commits
 
-Every material change-set is reviewed before completion. The editing agent
-invokes `reviewer` on the working-tree diff and addresses or reports findings.
-`tech-writer` cannot spawn subagents, so its caller reviews its diffs. Trivial
-changes get a documented self-review. `/review` requests a manual review.
+Every material change-set is reviewed before completion. The calling agent
+invokes `reviewer` on the working-tree diff and reports why, what it found, and
+how the findings were handled. It also names any other subagents used and what
+they reported. When a subagent such as `tech-writer` produces a diff, its caller
+performs this review and reporting. Trivial changes get a documented
+self-review. `/review` requests a manual review.
 
 Commit messages use `type(area): brief summary`, followed by why the change was
 made. `./sync.sh --message "..."` overrides the generated message.
@@ -146,7 +177,7 @@ made. `./sync.sh --message "..."` overrides the generated message.
 ## Installation and verification
 
 `setup.sh` links these files into `~/.config/opencode` and creates the two
-central plan roots. After editing:
+central record roots. After editing:
 
 ```bash
 ./setup.sh --no-timer
@@ -165,8 +196,8 @@ opencode service status
 opencode pair
 ```
 
-`--standalone` reads the files without contacting the background service. The
-running service must be restarted to use changed configuration.
+`--standalone` reads the files without contacting the background service.
+Config changes reload automatically; use `/reload` to force a full reload.
 
 ## Limitations
 

@@ -1,6 +1,6 @@
 ---
 name: git
-description: Safe Git workflow, repository inspection, staging, diffs, history, and consistent commit messages. Use when preparing commits, reviewing changes, or recovering repository state.
+description: Safe Git workflow, repository inspection, staging, diffs, history, consistent commit messages, pull request bodies, and read-first GitHub CLI usage. Use when preparing commits, writing PRs, reviewing changes, or recovering repository state.
 compatibility: opencode
 ---
 
@@ -8,8 +8,11 @@ compatibility: opencode
 
 ## When to use me
 
-Use this skill when inspecting repository state, preparing a commit, reviewing
-a diff, or explaining Git behaviour.
+Use this skill when inspecting repository state, preparing a commit, writing a
+pull request body, using the GitHub CLI (`gh`), reviewing a diff, or explaining
+Git behaviour. Inspection and evidence steps use the shell, so use this skill
+from `build`, not `mentor`; a mentor explains the commands and lets the user
+run them.
 
 ## Commit message format
 
@@ -70,6 +73,82 @@ branch explicitly from the freshly fetched remote-tracking ref.
 3. Run `git log --oneline -10` to match the repository's existing style.
 4. Read the surrounding files before judging a change.
 5. Stage only the intended files.
+
+## Pull request body
+
+Before drafting, check `.github/PULL_REQUEST_TEMPLATE.md` and any other PR
+template under `.github/`; when one exists, follow it instead of the structure
+below. Otherwise use this structure. Skip preambles and keep prose brief. Use
+the vocabulary already present in `AGENTS.md`, the README, or the project's
+domain docs; do not assume a glossary file exists.
+
+```markdown
+## Summary
+
+<one short visual and one sentence explaining it>
+
+## Evidence
+
+- **Before:** <command and output, failing test, or screenshot>
+- **After:** <command and output, passing test, or screenshot>
+
+## Merge Danger
+
+**Door:** <one-way or two-way>
+
+**Blast Radius:** <one word>
+```
+
+### Summary
+
+Pick the smallest view that makes the change clear: pseudocode for logic, a
+call tree for control flow, a shallow file tree for layout, a `diff` for a
+focused edit, or Mermaid for interactions. Put one short sentence beside the
+visual and describe in words what it shows; a screen-reader user should not
+need to see the diagram. Keep only the calls, files, states, or boundaries that
+this change needs.
+
+### Evidence
+
+Show before and after with the exact command and its real output. Screenshots
+are appropriate only when the change is visual and a browser is available.
+Never invent a passing test or a screenshot; if a check could not run, say so.
+
+### Merge Danger
+
+A two-way door is cheap to reverse; a one-way door is hard to undo. Name the
+door, then give the blast radius as one word such as `repository`, `consumers`,
+`mobile`, or `layout`. Add prose only when the risk is not obvious.
+
+## GitHub CLI (`gh`)
+
+`gh` infers the repository from `git remote -v`. Before the first write
+operation in a session, confirm the target with
+`gh repo view --json nameWithOwner`. Never file issues or PRs into an upstream
+repository you do not own. Before creating an issue or PR, inspect
+`.github/ISSUE_TEMPLATE/`, `.github/PULL_REQUEST_TEMPLATE.md`, and any other
+templates under `.github/`; use the repo's template, fields, and labels instead
+of inventing your own.
+
+Read-only commands are fine without extra approval: `gh issue view`,
+`gh issue list`, `gh pr view`, `gh pr diff`, `gh pr checks`, `gh repo view`, and
+`gh run view`. In this config `gh api` always prompts, including GET requests;
+treat it as a write-equivalent and explain it first. Ask before every mutation:
+`gh issue create|comment|edit|close`, `gh pr create|comment|edit|close|merge`,
+labels, assignments, releases, and `gh auth` changes.
+
+Useful read patterns:
+
+- `gh pr view <number>` then `gh pr diff <number>` for the change itself.
+- `gh issue view <number> --json number,title,body,labels,comments`.
+- `gh pr checks <number>` for CI status.
+- GitHub shares one number space for issues and PRs: try `gh pr view 42` first,
+  then `gh issue view 42` if it is not a PR.
+- Use a heredoc for multi-line issue or PR bodies.
+
+Never put tokens in commands or store them in the repository. If `gh` reports
+missing credentials, ask the user to authenticate rather than working around
+it.
 
 ## Safety rules
 

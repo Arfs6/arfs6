@@ -1,7 +1,7 @@
 # OpenCode TODO
 
 All items are complete. The executed plan is archived at
-`~/.local/share/opencode/plans/arfs6/opencode-todo-execution-plan.md`.
+`~/.local/share/opencode/records/arfs6/opencode-todo-execution-plan.md`.
 
 - [x] Merge `implementer` and `build` into `build`; provide `/build` and keep
       `/implement` as an alias.
