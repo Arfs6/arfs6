@@ -148,3 +148,7 @@ export PATH="$HOME/node_modules/.bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export NODE_PATH=/usr/lib/node_modules
 eval "$(zoxide init bash --cmd cd)"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/arfs6/.local/bin:$PATH"

@@ -27,3 +27,7 @@ eval "$(oh-my-posh init zsh --config ~/.poshthemes/arfs6.omp.json)"
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"                                                                  
 # Enable zoxide
 eval "$(zoxide init zsh)"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/arfs6/.local/bin:$PATH"
